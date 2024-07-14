@@ -1,5 +1,3 @@
-<app-map></app-map>
-
 <!-- dashboard.component.html -->
 <body>
   <div class="container">
@@ -42,9 +40,9 @@
               <td>{{ tasinmaz.nitelik }}</td>
               <td>{{ tasinmaz.koordinatBilgileri }}</td>
               <td>
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addTasinmazModal">Düzenle</button>                
-                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Sil</button>
-                </td>
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateTasinmazModal">Düzenle</button>                
+                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteTasinmazModal">Sil</button>                
+              </td>
             </tr>
           </tbody>
         </table>
@@ -53,4 +51,5 @@
   </div>
   <app-add></app-add>
   <app-update></app-update>
+  <app-delete></app-delete>
 </body>

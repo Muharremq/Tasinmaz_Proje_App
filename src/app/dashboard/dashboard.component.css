@@ -220,3 +220,11 @@ table.table .avatar {
 .modal form label {
     font-weight: normal;
 }
+
+.my-custom-button {
+    background-color: #ff5733; /* Arka plan rengini değiştirir */
+    border-color: #ff5733; /* Kenarlık rengini değiştirir */
+    color: #fff;
+  }
+  
+  

@@ -9,19 +9,23 @@ import { Tasinmaz } from "../models/tasinmaz";
 })
 export class DashboardComponent implements OnInit {
 
-  constructor( private http: HttpClient) { 
+  tasinmazlar: Tasinmaz[] = [];
 
-  }
-
-  tasinmazlar: Tasinmaz []= [];
+  constructor(private http: HttpClient) {}
 
   ngOnInit() {
     this.getTasinmazlar();
   }
 
   getTasinmazlar(){
-    return this.http.get<Tasinmaz[]>("https://localhost:5001/api/TasinmazBilgi").subscribe((data) => {
+    return this.http.get<Tasinmaz[]>("https://localhost:44348/api/TasinmazBilgi").subscribe((data) => {
       this.tasinmazlar = data;
+      this.tasinmazlar.forEach(tasinmaz => tasinmaz.selected = false); // Her taşınmaz nesnesine `selected` alanını ekliyoruz
     });
+  }
+
+  selectAll(event: any) {
+    const isChecked = event.target.checked;
+    this.tasinmazlar.forEach(tasinmaz => tasinmaz.selected = isChecked);
   }
 }

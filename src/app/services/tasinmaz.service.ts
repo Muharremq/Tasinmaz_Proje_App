@@ -7,7 +7,7 @@ import { Tasinmaz } from '../models/tasinmaz';
   providedIn: 'root'
 })
 export class TasinmazService {
-  private apiUrl = 'https://localhost:5001/api/TasinmazBilgi'; // API URL'inizi burada belirleyin
+  private apiUrl = 'https://localhost:44348/api/TasinmazBilgi'; // API URL'inizi burada belirleyin
 
   constructor(private http: HttpClient) {}
 

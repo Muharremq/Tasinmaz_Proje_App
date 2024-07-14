@@ -1,4 +1,4 @@
-export  class il{
+export  interface il{
     id : number;
     name : string;
 }

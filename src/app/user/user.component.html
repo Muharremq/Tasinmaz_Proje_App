@@ -1,0 +1,46 @@
+<app-navbar></app-navbar>
+
+<!-- User Table -->
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1 class="text-center">User Table</h1>
+      <!-- Search Bar -->
+      <form class="d-flex mb-3" role="search">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+      <!-- Add Button -->
+      <div class="mb-3">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTasinmazModal">
+          Yeni Kullanıcı Ekle
+        </button>
+      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>{{user.id}}</td>
+            <td>{{user.name}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.phone}}</td>
+            <td>{{user.address}}</td>
+            <td>
+              <button class="btn btn-primary">Düzenle</button>
+              <button class="btn btn-danger">Sil</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

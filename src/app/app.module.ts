@@ -9,6 +9,9 @@ import { UpdateComponent } from './update/update.component';
 import { AddComponent } from './add/add.component';
 import { DeleteComponent } from './delete/delete.component';
 import { MapComponent } from './map/map.component';
+import { LogComponent } from './log/log.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { UserComponent } from './user/user.component';
 
 
 
@@ -20,7 +23,10 @@ import { MapComponent } from './map/map.component';
     UpdateComponent,
     AddComponent,
     DeleteComponent,
-    MapComponent
+    MapComponent,
+    LogComponent,
+    NavbarComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,

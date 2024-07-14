@@ -1,0 +1,21 @@
+<!-- delete.component.html -->
+<div id="deleteTasinmazModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form (submit)="confirmDelete()">
+        <div class="modal-header">						
+          <h4 class="modal-title">Taşınmaz Sil</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">					
+          <p>Bu Taşınmaz Bilgisini Silmek İstediğinize Emin Misiniz?</p>
+          <p class="text-warning"><small>Bu eylem geri alınamaz</small></p>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger">Sil</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vazgeç</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

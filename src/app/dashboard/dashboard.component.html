@@ -1,0 +1,56 @@
+<app-map></app-map>
+
+<!-- dashboard.component.html -->
+<body>
+  <div class="container">
+    <div class="table-responsive">
+      <div class="table-wrapper">
+        <div class="table-title">
+          <div class="row">
+            <div class="col-xs-6">
+              <h2>Taşınmaz <b>Listesi</b></h2>
+            </div>
+            <div class="col-xs-6">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTasinmazModal">
+                Yeni Taşınmaz Ekle</button>
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Sil</button>
+            </div>
+          </div>
+        </div>
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th></th>
+              <th>İl</th>
+              <th>İlçe</th>
+              <th>Mahalle</th>
+              <th>Ada</th>
+              <th>Parsel</th>
+              <th>Nitelik</th>
+              <th>Koordinat Bilgileri</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tasinmaz of tasinmazlar">
+              <td>{{ tasinmaz.name }}</td>
+              <td>{{ tasinmaz.mahalle.ilce.il.name }}</td>
+              <td>{{ tasinmaz.mahalle.ilce.name }}</td>
+              <td>{{ tasinmaz.mahalle.name }}</td>
+              <td>{{ tasinmaz.ada }}</td>
+              <td>{{ tasinmaz.parsel }}</td>
+              <td>{{ tasinmaz.nitelik }}</td>
+              <td>{{ tasinmaz.koordinatBilgileri }}</td>
+              <td>
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addTasinmazModal">Düzenle</button>                
+                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Sil</button>
+                </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <app-add></app-add>
+  <app-update></app-update>
+</body>

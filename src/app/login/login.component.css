@@ -1,0 +1,106 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(to bottom, #80cbc4, #b39ddb);
+    margin: 0;
+}
+
+.Tasinmaz {
+    margin-bottom: 20px;
+    font-size: 2rem; /* Responsive font size */
+    text-align: center;
+}
+
+.login-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 400px; /* Maksimum genişlik */
+    margin: 0 auto;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    padding-left: 40px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.input-group svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #607d8b;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+button:hover {
+    background: #546e7a;
+}
+
+.login-options {
+    margin-top: 10px;
+}
+
+.login-options a {
+    font-size: 14px;
+    color: #607d8b;
+    text-decoration: none;
+}
+
+.login-options a:hover {
+    text-decoration: underline;
+}
+
+/* Medya sorguları (media queries) ile küçük ekranlara uyum sağlama */
+@media (max-width: 600px) {
+    .Tasinmaz {
+        font-size: 1.5rem; /* Daha küçük ekranlar için yazı boyutunu küçült */
+    }
+
+    .login-container {
+        padding: 10px; /* Daha küçük ekranlar için padding azalt */
+    }
+
+    .input-group input {
+        padding: 8px;
+        padding-left: 35px; /* Daha küçük ekranlar için padding azalt */
+    }
+
+    button {
+        padding: 8px;
+        font-size: 14px; /* Daha küçük ekranlar için yazı boyutunu küçült */
+    }
+}

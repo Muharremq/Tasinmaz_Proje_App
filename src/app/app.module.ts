@@ -12,6 +12,8 @@ import { MapComponent } from './map/map.component';
 import { LogComponent } from './log/log.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { UserComponent } from './user/user.component';
+import { UserAddComponent } from './user/user-add/user-add.component';
+import { UserUpdateComponent } from './user/user-update/user-update.component';
 
 
 
@@ -26,7 +28,9 @@ import { UserComponent } from './user/user.component';
     MapComponent,
     LogComponent,
     NavbarComponent,
-    UserComponent
+    UserComponent,
+    UserAddComponent,
+    UserUpdateComponent
   ],
   imports: [
     BrowserModule,

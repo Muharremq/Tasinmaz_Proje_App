@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IlService } from '../services/il.service';
 import { IlceService } from '../services/ilce.service';
 import { MahalleService } from '../services/mahalle.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TasinmazService } from '../services/tasinmaz.service';
 
 @Component({
   selector: 'app-add',
@@ -10,7 +11,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./add.component.css']
 })
 export class AddComponent implements OnInit {
-
   addTasinmazForm: FormGroup;
   iller: any[] = [];
   ilceler: any[] = [];
@@ -20,10 +20,21 @@ export class AddComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private tasinmazService: TasinmazService,
     private ilService: IlService,
     private ilceService: IlceService,
     private mahalleService: MahalleService
-  ) {
+  ) {}
+
+  ngOnInit() {
+    this.loadIller();
+
+    const modalElement = document.getElementById('addTasinmazModal');
+    if (modalElement) {
+      modalElement.addEventListener('show.bs.modal', () => this.resetForm());
+      modalElement.addEventListener('hide.bs.modal', () => this.resetForm());
+    }
+
     this.addTasinmazForm = this.fb.group({
       isim: ['', Validators.required],
       il: ['', Validators.required],
@@ -36,22 +47,36 @@ export class AddComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.loadIller();
+  onSubmit(): void {
+    if (this.addTasinmazForm.valid) {
+      const formData = this.addTasinmazForm.value;
+      const tasinmaz = {
+        id: 0,
+        name: formData.isim,
+        ada: formData.ada,
+        parsel: formData.parsel,
+        nitelik: formData.nitelik,
+        koordinatBilgileri: formData.koordinatBilgileri,
+        mahalleId: formData.mahalle
+      };
 
-    const modalElement = document.getElementById('addTasinmazModal');
-    if (modalElement) {
-      modalElement.addEventListener('show.bs.modal', () => this.resetForm());
-      modalElement.addEventListener('hide.bs.modal', () => this.resetForm());
+      this.tasinmazService.addTasinmaz(tasinmaz).subscribe(
+        (response) => {
+          console.log('Taşınmaz başarıyla eklendi', response);
+          this.addTasinmazForm.reset();
+          document.getElementById('addTasinmazModal').click();
+        },
+        (error) => {
+          console.error('Taşınmaz eklenirken hata oluştu', error);
+        }
+      );
     }
   }
 
-  
   loadIller() {
     this.ilService.getIller().subscribe(
       (data) => {
         this.iller = data;
-        // İller alfabetik sıraya göre sıralanabilir
         this.iller.sort((a, b) => a.name.localeCompare(b.name));
       },
       (error) => {
@@ -69,6 +94,7 @@ export class AddComponent implements OnInit {
     this.selectedIlce = ilceId;
     this.loadMahalleler(ilceId);
   }
+
   loadIlceler(ilId: number): void {
     this.ilceService.getIlcelerByIlId(ilId).subscribe(
       (data) => {
@@ -91,7 +117,6 @@ export class AddComponent implements OnInit {
     );
   }
 
-  // Reset the form
   resetForm(): void {
     this.addTasinmazForm.reset();
     this.selectedIl = null;

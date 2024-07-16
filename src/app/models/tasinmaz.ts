@@ -13,6 +13,5 @@ export class Tasinmaz {
     parsel: string;
     nitelik: string;
     koordinatBilgileri: string;
-    selected?: boolean; // Seçim durumu için opsiyonel alan
   }
   

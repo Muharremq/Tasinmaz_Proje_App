@@ -7,11 +7,11 @@ import { Observable } from 'rxjs';
 })
 export class IlceService {
 
-  private apiUrl = 'https://localhost:44348/api/Ilce';  // Backend API URL'nizi buraya ekleyin
+  private apiUrl = 'https://localhost:44348/api/Ilce/by-city/';  // Backend API URL'nizi buraya ekleyin
 
   constructor(private http: HttpClient) { }
 
   getIlcelerByIlId(ilId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}?ilId=${ilId}`);
+    return this.http.get<any[]>(this.apiUrl+ ilId);
   }
 }

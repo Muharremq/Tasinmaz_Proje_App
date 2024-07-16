@@ -1,6 +1,6 @@
+/* map.component.css */
 .map {
-    width: 80%;
-    height: 500px;
-    margin: auto;
-  }
-  
+  width: 90%;
+  height: 400px; /* Haritanın yüksekliğini burada belirleyebilirsiniz */
+  margin: auto;
+}

@@ -14,6 +14,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { UserComponent } from './user/user.component';
 import { UserAddComponent } from './user/user-add/user-add.component';
 import { UserUpdateComponent } from './user/user-update/user-update.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -35,7 +36,9 @@ import { UserUpdateComponent } from './user/user-update/user-update.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule,
+    FormsModule
     
   ],
   providers: [],

@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IlService } from '../services/il.service';
 import { IlceService } from '../services/ilce.service';
 import { MahalleService } from '../services/mahalle.service';
 import { TasinmazService } from '../services/tasinmaz.service';
+import { Router } from '@angular/router';
+import { Tasinmaz } from '../models/tasinmaz';
 
 @Component({
   selector: 'app-add',
@@ -11,6 +13,8 @@ import { TasinmazService } from '../services/tasinmaz.service';
   styleUrls: ['./add.component.css']
 })
 export class AddComponent implements OnInit {
+  @Output() tasinmazAdded = new EventEmitter<void>();
+
   addTasinmazForm: FormGroup;
   iller: any[] = [];
   ilceler: any[] = [];
@@ -23,7 +27,8 @@ export class AddComponent implements OnInit {
     private tasinmazService: TasinmazService,
     private ilService: IlService,
     private ilceService: IlceService,
-    private mahalleService: MahalleService
+    private mahalleService: MahalleService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -50,21 +55,25 @@ export class AddComponent implements OnInit {
   onSubmit(): void {
     if (this.addTasinmazForm.valid) {
       const formData = this.addTasinmazForm.value;
-      const tasinmaz = {
+      const tasinmaz: Tasinmaz = {
         id: 0,
         name: formData.isim,
         ada: formData.ada,
         parsel: formData.parsel,
         nitelik: formData.nitelik,
         koordinatBilgileri: formData.koordinatBilgileri,
-        mahalleId: formData.mahalle
+        mahalleId: formData.mahalle,
+        mahalle: null, // İsteğe bağlı olarak null olarak bırakılabilir
+        selected: false // İsteğe bağlı olarak varsayılan false değeri atanabilir
       };
 
       this.tasinmazService.addTasinmaz(tasinmaz).subscribe(
         (response) => {
           console.log('Taşınmaz başarıyla eklendi', response);
           this.addTasinmazForm.reset();
+          this.tasinmazAdded.emit(); // Olayı yayınla
           document.getElementById('addTasinmazModal').click();
+          this.router.navigate(['/dashboard']);
         },
         (error) => {
           console.error('Taşınmaz eklenirken hata oluştu', error);

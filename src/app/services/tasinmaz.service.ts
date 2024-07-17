@@ -14,12 +14,11 @@ export class TasinmazService {
   getTasinmazById(id: number): Observable<Tasinmaz> {
     return this.http.get<Tasinmaz>(`${this.apiUrl}/${id}`);
   }
-
+  
   addTasinmaz(tasinmaz: Tasinmaz): Observable<Tasinmaz> {
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json-patch+json'
+      'Content-Type': 'application/json'
     });
-
     return this.http.post<Tasinmaz>(this.apiUrl, tasinmaz, { headers });
   }
 }

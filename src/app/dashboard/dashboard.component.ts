@@ -1,8 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Tasinmaz } from "../models/tasinmaz";
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { AddComponent } from '../add/add.component';
 
 @Component({
   selector: "app-dashboard",
@@ -10,7 +11,7 @@ import { saveAs } from 'file-saver';
   styleUrls: ["./dashboard.component.css"],
 })
 export class DashboardComponent implements OnInit {
-
+  @ViewChild(AddComponent) addComponent: AddComponent;
   tasinmazlar: Tasinmaz[] = [];
 
   constructor(private http: HttpClient) {}
@@ -24,6 +25,10 @@ export class DashboardComponent implements OnInit {
       this.tasinmazlar = data;
       this.tasinmazlar.forEach(tasinmaz => tasinmaz.selected = false); // Her taşınmaz nesnesine `selected` alanını ekliyoruz
     });
+  }
+
+  onTasinmazAdded() {
+    this.getTasinmazlar();
   }
 
   selectAll(event: any) {
@@ -43,5 +48,6 @@ export class DashboardComponent implements OnInit {
     saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
   }
 }
+
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';

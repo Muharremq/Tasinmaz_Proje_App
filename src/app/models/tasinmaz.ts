@@ -1,18 +1,11 @@
-export class Tasinmaz {
-    name: string;
-    mahalle: {
-      ilce: {
-        il: {
-          name: string;
-        };
-        name: string;
-      };
-      name: string;
-    };
-    ada: string;
-    parsel: string;
-    nitelik: string;
-    koordinatBilgileri: string;
-    selected: boolean;
-  }
-  
+export interface Tasinmaz {
+  id: number;
+  name: string;
+  ada: string;
+  parsel: string;
+  nitelik: string;
+  koordinatBilgileri: string;
+  mahalleId: number;
+  mahalle?: any;
+  selected?: boolean;
+}

@@ -14,6 +14,7 @@
           <div class="mb-3">
             <label for="il" class="form-label">İl</label>
             <select id="il" class="form-control" formControlName="il" (change)="onIlChange($event.target.value)" required>
+              <option selected>Choose...</option>
               <option *ngFor="let il of iller" [value]="il.id">{{ il.name }}</option>
             </select>
           </div>

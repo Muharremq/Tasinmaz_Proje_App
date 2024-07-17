@@ -8,4 +8,5 @@ export interface Tasinmaz {
   mahalleId: number;
   mahalle?: any;
   selected?: boolean;
+  selectedTasinmazId?: number;
 }

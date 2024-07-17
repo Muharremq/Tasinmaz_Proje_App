@@ -13,6 +13,7 @@ import { AddComponent } from '../add/add.component';
 export class DashboardComponent implements OnInit {
   @ViewChild(AddComponent) addComponent: AddComponent;
   tasinmazlar: Tasinmaz[] = [];
+  selectedTasinmazId: number | null = null; // Burada `selectedTasinmazId` tanımlıyoruz
 
   constructor(private http: HttpClient) {}
 
@@ -29,6 +30,14 @@ export class DashboardComponent implements OnInit {
 
   onTasinmazAdded() {
     this.getTasinmazlar();
+  }
+
+  openDeleteModal(tasinmazId: number) {
+    this.selectedTasinmazId = tasinmazId;
+  }
+
+  onTasinmazDeleted(tasinmazId: number) {
+    this.tasinmazlar = this.tasinmazlar.filter(t => t.id !== tasinmazId);
   }
 
   selectAll(event: any) {

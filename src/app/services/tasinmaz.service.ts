@@ -21,4 +21,8 @@ export class TasinmazService {
     });
     return this.http.post<Tasinmaz>(this.apiUrl, tasinmaz, { headers });
   }
+
+  deleteTasinmaz(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 }

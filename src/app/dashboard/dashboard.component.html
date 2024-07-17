@@ -46,7 +46,7 @@
               <td>{{ tasinmaz.nitelik }}</td>
               <td>{{ tasinmaz.koordinatBilgileri }}</td>
               <td>
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateTasinmazModal">Düzenle</button>                
+                <button (click)="openUpdateModal(tasinmaz.id)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateTasinmazModal">Düzenle</button>                
                 <button type="button" class="btn btn-danger btn-sm" (click)="openDeleteModal(tasinmaz.id)" data-bs-toggle="modal" data-bs-target="#deleteTasinmazModal">Sil</button>
               </td>
             </tr>
@@ -58,6 +58,6 @@
     </div>
   </div>
   <app-add></app-add>
-  <app-update></app-update>
+<app-update (tasinmazUpdated)="onTasinmazUpdated()"></app-update>
   <app-delete [tasinmazId]="selectedTasinmazId" (tasinmazDeleted)="onTasinmazDeleted($event)"></app-delete>
 </body>

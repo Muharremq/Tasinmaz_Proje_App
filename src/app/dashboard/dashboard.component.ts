@@ -4,6 +4,7 @@ import { Tasinmaz } from "../models/tasinmaz";
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { AddComponent } from '../add/add.component';
+import { UpdateComponent } from '../update/update.component';
 
 @Component({
   selector: "app-dashboard",
@@ -11,9 +12,11 @@ import { AddComponent } from '../add/add.component';
   styleUrls: ["./dashboard.component.css"],
 })
 export class DashboardComponent implements OnInit {
+  @ViewChild(UpdateComponent) updateComponent: UpdateComponent;
   @ViewChild(AddComponent) addComponent: AddComponent;
   tasinmazlar: Tasinmaz[] = [];
   selectedTasinmazId: number | null = null; // Burada `selectedTasinmazId` tanımlıyoruz
+  
 
   constructor(private http: HttpClient) {}
 
@@ -43,6 +46,16 @@ export class DashboardComponent implements OnInit {
   selectAll(event: any) {
     const isChecked = event.target.checked;
     this.tasinmazlar.forEach(tasinmaz => tasinmaz.selected = isChecked);
+  }
+
+  openUpdateModal(tasinmazId: number) {
+    this.selectedTasinmazId = tasinmazId;
+    // Trigger change detection and pass the selected ID to the update component
+    this.updateComponent.tasinmazId = tasinmazId;
+    this.updateComponent.ngOnChanges();
+  }
+  onTasinmazUpdated() {
+    this.getTasinmazlar();
   }
 
   exportToExcel(): void {

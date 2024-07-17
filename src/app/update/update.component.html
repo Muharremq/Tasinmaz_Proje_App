@@ -40,16 +40,14 @@
           </div>
           <div class="mb-3">
             <label for="nitelik" class="form-label">Nitelik</label>
-            <textarea class="form-control" id="nitelik" formControlName="nitelik" required></textarea>
+            <input type="text" class="form-control" id="nitelik" formControlName="nitelik" required>
           </div>
           <div class="mb-3">
             <label for="koordinatBilgileri" class="form-label">Koordinat Bilgileri</label>
             <input type="text" class="form-control" id="koordinatBilgileri" formControlName="koordinatBilgileri" required>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vazgeç</button>
-            <button type="submit" class="btn btn-primary" [disabled]="!updateTasinmazForm.valid">Güncelle</button>
-          </div>
+          <button type="submit" class="btn btn-primary">Güncelle</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vazgeç</button>
         </form>
       </div>
     </div>

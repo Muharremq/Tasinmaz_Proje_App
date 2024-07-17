@@ -25,4 +25,12 @@ export class TasinmazService {
   deleteTasinmaz(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  updateTasinmaz(id: number, tasinmaz: any): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.http.put(`${this.apiUrl}/${id}`, tasinmaz, { headers });
+  }
+  
 }

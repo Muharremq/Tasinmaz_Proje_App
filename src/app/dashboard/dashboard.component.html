@@ -13,14 +13,15 @@
             <!--Ekleme butonu-->
             <div class="col-xs-6">
               <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTasinmazModal">
-                Yeni Taşınmaz Ekle</button>
+                Yeni Taşınmaz Ekle
+              </button>
             </div>
           </div>
         </div>
         <!--Search Bar-->
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-primary" type="submit">Search</button> <!-- 'ctype' typo düzeltildi -->
+          <button class="btn btn-primary" type="submit">Search</button>
         </form>
         <table class="table table-striped table-hover">
           <thead>
@@ -46,18 +47,18 @@
               <td>{{ tasinmaz.nitelik }}</td>
               <td>{{ tasinmaz.koordinatBilgileri }}</td>
               <td>
-                <button (click)="openUpdateModal(tasinmaz.id)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateTasinmazModal">Düzenle</button>                
+                <button type="button" class="btn btn-primary" (click)="openUpdateModal(tasinmaz.id)" data-bs-toggle="modal" data-bs-target="#updateTasinmazModal">Düzenle</button>
                 <button type="button" class="btn btn-danger btn-sm" (click)="openDeleteModal(tasinmaz.id)" data-bs-toggle="modal" data-bs-target="#deleteTasinmazModal">Sil</button>
               </td>
             </tr>
           </tbody>
         </table>
-         <!--Export Excel Buttonu-->
-      <button type="button" class="btn btn-primary" (click)="exportToExcel()">Export to Excel</button>
+        <!--Export Excel Buttonu-->
+        <button type="button" class="btn btn-primary" (click)="exportToExcel()">Export to Excel</button>
       </div>
     </div>
   </div>
-  <app-add></app-add>
-<app-update (tasinmazUpdated)="onTasinmazUpdated()"></app-update>
+  <app-add (tasinmazAdded)="onTasinmazAdded()"></app-add>
+  <app-update (tasinmazUpdated)="onTasinmazUpdated()"></app-update>
   <app-delete [tasinmazId]="selectedTasinmazId" (tasinmazDeleted)="onTasinmazDeleted($event)"></app-delete>
 </body>

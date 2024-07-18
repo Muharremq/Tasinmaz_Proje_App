@@ -18,7 +18,6 @@ export class DeleteComponent implements OnInit {
   confirmDelete(): void {
     if (confirm('Bu taşınmazı silmek istediğinize emin misiniz?')) {
       this.tasinmazService.deleteTasinmaz(this.tasinmazId).subscribe(() => {
-      //this.tasinmazService.deleteTasınmaz(this.tasinmazId).subscribe(() => {
         alert('Taşınmaz başarıyla silindi.');
         this.tasinmazDeleted.emit(this.tasinmazId);
       }, error => {

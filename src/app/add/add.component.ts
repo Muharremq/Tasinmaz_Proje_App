@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IlService } from '../services/il.service';
 import { IlceService } from '../services/ilce.service';
@@ -14,6 +14,8 @@ import { Tasinmaz } from '../models/tasinmaz';
 })
 export class AddComponent implements OnInit {
   @Output() tasinmazAdded = new EventEmitter<void>();
+  @ViewChild('addTasinmazModal') addTasinmazModal: ElementRef;
+
 
   addTasinmazForm: FormGroup;
   iller: any[] = [];
@@ -33,12 +35,6 @@ export class AddComponent implements OnInit {
 
   ngOnInit() {
     this.loadIller();
-
-    const modalElement = document.getElementById('addTasinmazModal');
-    if (modalElement) {
-      modalElement.addEventListener('show.bs.modal', () => this.resetForm());
-      modalElement.addEventListener('hide.bs.modal', () => this.resetForm());
-    }
 
     this.addTasinmazForm = this.fb.group({
       isim: ['', Validators.required],
@@ -63,22 +59,28 @@ export class AddComponent implements OnInit {
         nitelik: formData.nitelik,
         koordinatBilgileri: formData.koordinatBilgileri,
         mahalleId: formData.mahalle,
-        mahalle: null, // İsteğe bağlı olarak null olarak bırakılabilir
-        selected: false // İsteğe bağlı olarak varsayılan false değeri atanabilir
+        mahalle: null,
+        selected: false
       };
 
       this.tasinmazService.addTasinmaz(tasinmaz).subscribe(
         (response) => {
           console.log('Taşınmaz başarıyla eklendi', response);
           this.addTasinmazForm.reset();
-          this.tasinmazAdded.emit(); // Olayı yayınla
-          document.getElementById('addTasinmazModal').click();
-          this.router.navigate(['/dashboard']);
+          this.tasinmazAdded.emit(); // Emit the event
+          this.closeModal();
         },
         (error) => {
           console.error('Taşınmaz eklenirken hata oluştu', error);
         }
       );
+    }
+  }
+  
+  closeModal() {
+    const modal = document.getElementById('addTasinmazModal');
+    if (modal) {
+      (modal as any).modal('hide');
     }
   }
 

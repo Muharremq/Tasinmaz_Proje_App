@@ -1,22 +1,21 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Tasinmaz } from "../models/tasinmaz";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Tasinmaz } from '../models/tasinmaz';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { AddComponent } from '../add/add.component';
 import { UpdateComponent } from '../update/update.component';
 
 @Component({
-  selector: "app-dashboard",
-  templateUrl: "./dashboard.component.html",
-  styleUrls: ["./dashboard.component.css"],
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  @ViewChild(UpdateComponent) updateComponent: UpdateComponent;
   @ViewChild(AddComponent) addComponent: AddComponent;
+  @ViewChild(UpdateComponent) updateComponent: UpdateComponent;
   tasinmazlar: Tasinmaz[] = [];
-  selectedTasinmazId: number | null = null; // Burada `selectedTasinmazId` tanımlıyoruz
-  
+  selectedTasinmazId: number | null = null;
 
   constructor(private http: HttpClient) {}
 
@@ -24,15 +23,29 @@ export class DashboardComponent implements OnInit {
     this.getTasinmazlar();
   }
 
-  getTasinmazlar(){
-    return this.http.get<Tasinmaz[]>("https://localhost:44348/api/TasinmazBilgi").subscribe((data) => {
+  getTasinmazlar() {
+    this.http.get<Tasinmaz[]>('https://localhost:44348/api/TasinmazBilgi').subscribe((data) => {
       this.tasinmazlar = data;
-      this.tasinmazlar.forEach(tasinmaz => tasinmaz.selected = false); // Her taşınmaz nesnesine `selected` alanını ekliyoruz
+      this.tasinmazlar.forEach(tasinmaz => tasinmaz.selected = false);
     });
   }
 
   onTasinmazAdded() {
     this.getTasinmazlar();
+    this.closeAddModal();
+  }
+
+  openAddModal() {
+    this.addComponent.resetForm();
+    const modal = document.getElementById('addTasinmazModal');
+    if (modal) {
+      (modal as any).modal('show');
+    }
+  }
+
+  onTasinmazUpdated() {
+    this.getTasinmazlar();
+    this.closeUpdateModal(); // Close the modal after update
   }
 
   openDeleteModal(tasinmazId: number) {
@@ -50,12 +63,12 @@ export class DashboardComponent implements OnInit {
 
   openUpdateModal(tasinmazId: number) {
     this.selectedTasinmazId = tasinmazId;
-    // Trigger change detection and pass the selected ID to the update component
     this.updateComponent.tasinmazId = tasinmazId;
     this.updateComponent.ngOnChanges();
-  }
-  onTasinmazUpdated() {
-    this.getTasinmazlar();
+    const modal = document.getElementById('updateTasinmazModal');
+    if (modal) {
+      (modal as any).modal('show');
+    }
   }
 
   exportToExcel(): void {
@@ -68,6 +81,20 @@ export class DashboardComponent implements OnInit {
   private saveAsExcelFile(buffer: any, fileName: string): void {
     const data = new Blob([buffer], { type: EXCEL_TYPE });
     saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+  }
+
+  private closeAddModal(): void {
+    const modal = document.getElementById('addTasinmazModal');
+    if (modal) {
+      (modal as any).modal('hide');
+    }
+  }
+
+  private closeUpdateModal(): void {
+    const modal = document.getElementById('updateTasinmazModal');
+    if (modal) {
+      (modal as any).modal('hide');
+    }
   }
 }
 

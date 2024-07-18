@@ -4,6 +4,9 @@ import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
+import { fromLonLat, toLonLat } from 'ol/proj';
+
+
 
 
 @Component({
@@ -13,6 +16,7 @@ import OSM from 'ol/source/OSM';
 })
 export class MapComponent implements OnInit {
 
+  map: Map;
   constructor() { }
 
   ngOnInit() {
@@ -24,10 +28,19 @@ export class MapComponent implements OnInit {
         })
       ],
       view: new View({
-        center: [0, 0],
-        zoom: 2
+        center:fromLonLat([35.2433, 38.9637]),
+        zoom: 5.8
       })
     });
+    this.map.on('pointermove', this.displayCoordinates.bind(this));
+  }
+
+  displayCoordinates(event) {
+    const coordinates = toLonLat(this.map.getEventCoordinate(event.originalEvent));
+    const lon = coordinates[0].toFixed(6);
+    const lat = coordinates[1].toFixed(6);
+    const coordElement = document.getElementById('coordinates');
+    coordElement.innerHTML = `Koordinatlar: Enlem: ${lat}, Boylam: ${lon}`;
   }
 
 }

@@ -3,71 +3,66 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="addTasinmazModalLabel">Yeni Taşınmaz Ekle</h5>
+          <h5 class="modal-title" id="addTasinmazModalLabel">Taşınmaz Ekle</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form [formGroup]="addTasinmazForm" (ngSubmit)="onSubmit()">
             <div class="mb-3">
               <label for="isim" class="form-label">İsim</label>
-              <input type="text" class="form-control" id="isim" formControlName="isim" required>
+              <input type="text" id="isim" formControlName="isim" class="form-control">
             </div>
             <div class="mb-3">
               <label for="il" class="form-label">İl</label>
-              <select id="il" class="form-control" formControlName="il" (change)="onIlChange($event.target.value)" required>
-                <option selected>Choose...</option>
+              <select id="il" formControlName="il" class="form-select" (change)="onIlChange($event.target.value)">
                 <option *ngFor="let il of iller" [value]="il.id">{{ il.name }}</option>
               </select>
             </div>
-            <div class="mb-3" *ngIf="selectedIl">
+            <div class="mb-3">
               <label for="ilce" class="form-label">İlçe</label>
-              <select id="ilce" class="form-control" formControlName="ilce" (change)="onIlceChange($event.target.value)" required>
-                <option selected>Choose...</option>
+              <select id="ilce" formControlName="ilce" class="form-select" (change)="onIlceChange($event.target.value)">
                 <option *ngFor="let ilce of ilceler" [value]="ilce.id">{{ ilce.name }}</option>
               </select>
             </div>
-            <div class="mb-3" *ngIf="selectedIlce">
+            <div class="mb-3">
               <label for="mahalle" class="form-label">Mahalle</label>
-              <select id="mahalle" class="form-control" formControlName="mahalle" required>
-                <option selected>Choose...</option>
+              <select id="mahalle" formControlName="mahalle" class="form-select">
                 <option *ngFor="let mahalle of mahalleler" [value]="mahalle.id">{{ mahalle.name }}</option>
               </select>
             </div>
             <div class="mb-3">
               <label for="adres" class="form-label">Adres</label>
-              <input type="text" class="form-control" id="adres" formControlName="adres" required>
+              <input type="text" id="adres" formControlName="adres" class="form-control">
             </div>
             <div class="mb-3">
               <label for="ada" class="form-label">Ada</label>
-              <input type="text" class="form-control" id="ada" formControlName="ada" required>
+              <input type="text" id="ada" formControlName="ada" class="form-control">
             </div>
             <div class="mb-3">
               <label for="parsel" class="form-label">Parsel</label>
-              <input type="text" class="form-control" id="parsel" formControlName="parsel" required>
+              <input type="text" id="parsel" formControlName="parsel" class="form-control">
             </div>
             <div class="mb-3">
               <label for="nitelik" class="form-label">Nitelik</label>
-              <input class="form-control" id="nitelik" formControlName="nitelik" required>
+              <input type="text" id="nitelik" formControlName="nitelik" class="form-control">
             </div>
             <div class="mb-3">
-              <div>
-                <button type="button" class="btn btn-primary mt-2" (click)="openMapPage()">Harita Üzerinden Seç</button>
-              </div>
               <label for="koordinatX" class="form-label">Koordinat Bilgileri X</label>
-              <input type="text" class="form-control" id="koordinatX" formControlName="koordinatX" required>
+              <input type="text" id="koordinatX" formControlName="koordinatX" class="form-control">
             </div>
             <div class="mb-3">
               <label for="koordinatY" class="form-label">Koordinat Bilgileri Y</label>
-              <input type="text" class="form-control" id="koordinatY" formControlName="koordinatY" required>
-            </div>            
+              <input type="text" id="koordinatY" formControlName="koordinatY" class="form-control">
+            </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vazgeç</button>
-              <button type="submit" class="btn btn-success">Ekle</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+              <button type="button" class="btn btn-primary" (click)="openMap()">Koordinat Seç</button>
+              <button type="submit" class="btn btn-primary">Kaydet</button>
             </div>
           </form>
         </div>
+        <div *ngIf="showMap" id="map-container" style="width: 100%; height: 400px;"></div>
       </div>
     </div>
   </div>
-  </body>
-  
+</body>

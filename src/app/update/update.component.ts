@@ -18,7 +18,7 @@ export class UpdateComponent implements OnChanges, OnInit {
   iller: any[] = [];
   ilceler: any[] = [];
   mahalleler: any[] = [];
-  selectedIl: number;
+  selectedIl: number; 
   selectedIlce: number;
 
   constructor(
@@ -33,10 +33,12 @@ export class UpdateComponent implements OnChanges, OnInit {
       il: ['', Validators.required],
       ilce: ['', Validators.required],
       mahalle: ['', Validators.required],
+      adres: ['', Validators.required],
       ada: ['', Validators.required],
       parsel: ['', Validators.required],
       nitelik: ['', Validators.required],
-      koordinatBilgileri: ['', Validators.required]
+      koordinatX: ['', Validators.required],
+      koordinatY: ['', Validators.required],
     });
   }
 
@@ -52,10 +54,12 @@ export class UpdateComponent implements OnChanges, OnInit {
           il: data.mahalle.ilce.il.id,
           ilce: data.mahalle.ilce.id,
           mahalle: data.mahalle.id,
+          adres: data.adres,
           ada: data.ada,
           parsel: data.parsel,
           nitelik: data.nitelik,
-          koordinatBilgileri: data.koordinatBilgileri
+          koordinatX: data.koordinatX,
+          koordinatY: data.koordinatY,
         });
 
         this.onIlChange(data.mahalle.ilce.il.id, data.mahalle.ilce.id, data.mahalle.id);
@@ -124,8 +128,10 @@ export class UpdateComponent implements OnChanges, OnInit {
         ada: this.updateTasinmazForm.value.ada,
         parsel: this.updateTasinmazForm.value.parsel,
         nitelik: this.updateTasinmazForm.value.nitelik,
-        koordinatBilgileri: this.updateTasinmazForm.value.koordinatBilgileri,
-        mahalleId: this.updateTasinmazForm.value.mahalle
+        koordinatX: this.updateTasinmazForm.value.koordinatX,
+        koordinatY: this.updateTasinmazForm.value.koordinatY,
+        mahalleId: this.updateTasinmazForm.value.mahalle,
+        adres: this.updateTasinmazForm.value.adres
       };
   
       this.tasinmazService.updateTasinmaz(this.tasinmazId, updatedTasinmaz).subscribe(

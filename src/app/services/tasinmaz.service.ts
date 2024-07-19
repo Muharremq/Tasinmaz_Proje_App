@@ -33,4 +33,5 @@ export class TasinmazService {
     return this.http.put(`${this.apiUrl}/${id}`, tasinmaz, { headers });
   }
   
+  
 }

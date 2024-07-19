@@ -31,6 +31,10 @@
             </select>
           </div>
           <div class="mb-3">
+            <label for="adres" class="form-label">Adres</label>
+            <input type="text" class="form-control" id="adres" formControlName="adres" required>
+          </div>
+          <div class="mb-3">
             <label for="ada" class="form-label">Ada</label>
             <input type="text" class="form-control" id="ada" formControlName="ada" required>
           </div>
@@ -43,8 +47,12 @@
             <input type="text" class="form-control" id="nitelik" formControlName="nitelik" required>
           </div>
           <div class="mb-3">
-            <label for="koordinatBilgileri" class="form-label">Koordinat Bilgileri</label>
-            <input type="text" class="form-control" id="koordinatBilgileri" formControlName="koordinatBilgileri" required>
+            <label for="koordinatX" class="form-label">Koordinat Bilgileri X</label>
+            <input type="text" class="form-control" id="koordinatX" formControlName="koordinatX" required>
+          </div>
+          <div class="mb-3">
+            <label for="koordinatY" class="form-label">Koordinat Bilgileri Y</label>
+            <input type="text" class="form-control" id="koordinatY" formControlName="koordinatY" required>
           </div>
           <button type="submit" class="btn btn-primary">Güncelle</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vazgeç</button>

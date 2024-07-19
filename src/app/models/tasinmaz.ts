@@ -4,7 +4,9 @@ export interface Tasinmaz {
   ada: string;
   parsel: string;
   nitelik: string;
-  koordinatBilgileri: string;
+  koordinatX: number;
+  koordinatY: number;
+  adres: string;
   mahalleId: number;
   mahalle?: any;
   selected?: boolean;

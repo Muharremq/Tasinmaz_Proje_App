@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../models/user';
 
@@ -16,5 +16,13 @@ getUserById(id: number): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/user/${id}`);
   }
 
-  // Diğer CRUD işlemleri için metodlar eklenebilir
+  addUser(user: User): Observable<User> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json' // Make sure the Content-Type is 'application/json'
+    });
+    return this.http.post<User>(this.apiUrl, user, { headers });
+  }
+  
+  
+
 }

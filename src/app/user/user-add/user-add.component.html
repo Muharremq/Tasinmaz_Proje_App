@@ -1,43 +1,44 @@
-<!-- add.component.html -->
-<div class="modal fade" id="addTasinmazModal" tabindex="-1" aria-labelledby="addTasinmazModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addTasinmazModalLabel">Yeni Kullanıcı Ekle</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="isim" class="form-label">İsim</label>
-            <input type="text" class="form-control" id="isim" required>
-          </div>
-          <div class="mb-3">
-            <label for="il" class="form-label">Soyisim</label>
-            <input type="text" class="form-control" id="il" required>
-          </div>
-          <div class="mb-3">
-            <label for="ilce" class="form-label">Email</label>
-            <input type="text" class="form-control" id="ilce" required>
-          </div>
-          <div class="mb-3">
-            <label for="mahalle" class="form-label">Password</label>
-            <input type="text" class="form-control" id="mahalle" required>
-          </div>
-          <div class="mb-3">
-            <label for="ada" class="form-label">Phone</label>
-            <input type="text" class="form-control" id="ada" required>
-          </div>
-          <div class="mb-3">
-            <label for="parsel" class="form-label">Address</label>
-            <input type="text" class="form-control" id="parsel" required>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vazgeç</button>
-        <button type="button" class="btn btn-primary">Ekle</button>
+<body>
+  <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addUserModalLabel">Kullanıcı Ekle</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="model-body">
+          <form [formGroup]="addUserForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label for="name" class="form-label">İsim</label>
+              <input type="text" id="name" formControlName="name" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label for="surname" class="form-label">Soyisim</label>
+              <input type="text" id="surname" formControlName="surname" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" id="email" formControlName="email" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Şifre</label>
+              <input type="password" id="password" formControlName="password" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label for="phone" class="form-label">Telefon</label>
+              <input type="text" id="phone" formControlName="phone" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label for="address" class="form-label">Rol</label>
+              <input type="text" id="role" formControlName="rol" class="form-control">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+              <button type="submit" class="btn btn-primary">Kaydet</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</body>

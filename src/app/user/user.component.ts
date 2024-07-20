@@ -24,6 +24,9 @@ export class UserComponent implements OnInit {
       this.users = data;
     });
   }
+  onUserAdded() {
+    this.getUsers();
+  }
 
 
   // Export Excel Buttonu

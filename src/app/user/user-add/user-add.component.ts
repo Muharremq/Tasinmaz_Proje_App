@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-user-add',
@@ -23,10 +24,10 @@ export class UserAddComponent implements OnInit {
     this.addUserForm = this.fb.group({
       name: ['', Validators.required],
       surname: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]], // Add email validation
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
       phone: ['', Validators.required],
-      rol: ['', Validators.required], // Ensure this matches the API specification
+      rol: ['', Validators.required],
     });
   }
 
@@ -40,7 +41,7 @@ export class UserAddComponent implements OnInit {
         email: formData.email,
         password: formData.password,
         phone: formData.phone,
-        rol: formData.rol, // Ensure this field matches the API specification
+        rol: formData.rol,
       };
 
       this.userService.addUser(user).subscribe(
@@ -52,7 +53,6 @@ export class UserAddComponent implements OnInit {
         },
         (error) => {
           console.log('Kullanıcı eklenirken hata oluştu.', error);
-          // Handle specific validation errors
           if (error.status === 400) {
             if (error.error.errors.Rol) {
               console.log('Rol validation error:', error.error.errors.Rol);
@@ -71,8 +71,9 @@ export class UserAddComponent implements OnInit {
   }
 
   closeModal(): void {
-    this.addUserModal.nativeElement.click();
+    if (this.addUserModal) {
+      const modal: any = new bootstrap.Modal(this.addUserModal.nativeElement);
+      modal.hide();
+    }
   }
-
-
 }

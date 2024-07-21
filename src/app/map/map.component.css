@@ -1,7 +1,7 @@
 /* map.component.css */
 .map {
   width: 85%;
-  height: 600px; /* Haritanın yüksekliğini burada belirleyebilirsiniz */
+  height: 500px; /* Haritanın yüksekliğini burada belirleyebilirsiniz */
   margin: auto;
 }
 .coordinates {

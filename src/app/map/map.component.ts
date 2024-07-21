@@ -20,6 +20,8 @@ export class MapComponent implements AfterViewInit {
 
   private map: Map;
   private vectorSource: VectorSource = new VectorSource();
+  private initialCoordinates = fromLonLat([35.2433, 38.9637]);
+  private initialZoom = 6.3;
 
   ngAfterViewInit(): void {
     this.initializeMap();
@@ -47,8 +49,8 @@ export class MapComponent implements AfterViewInit {
         }),
       ],
       view: new View({
-        center: fromLonLat([35.2433, 38.9637]),
-        zoom: 6,
+        center: this.initialCoordinates,
+        zoom: this.initialZoom,
       }),
     });
 
@@ -76,5 +78,10 @@ export class MapComponent implements AfterViewInit {
     if (coordElement) {
       coordElement.innerHTML = `Koordinatlar: Enlem: ${lat}, Boylam: ${lon}`;
     }
+  }
+
+  resetMap(): void {
+    this.map.getView().setCenter(this.initialCoordinates);
+    this.map.getView().setZoom(this.initialZoom);
   }
 }

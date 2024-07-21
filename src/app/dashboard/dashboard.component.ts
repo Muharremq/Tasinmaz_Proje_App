@@ -71,18 +71,6 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  exportToExcel(): void {
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.tasinmazlar);
-    const workbook: XLSX.WorkBook = { Sheets: { 'tasinmazlar': worksheet }, SheetNames: ['tasinmazlar'] };
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    this.saveAsExcelFile(excelBuffer, 'tasinmazlar');
-  }
-
-  private saveAsExcelFile(buffer: any, fileName: string): void {
-    const data = new Blob([buffer], { type: EXCEL_TYPE });
-    saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
-  }
-
   private closeAddModal(): void {
     const modal = document.getElementById('addTasinmazModal');
     if (modal) {
@@ -95,6 +83,18 @@ export class DashboardComponent implements OnInit {
     if (modal) {
       (modal as any).modal('hide');
     }
+  }
+
+  exportToExcel(): void {
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.tasinmazlar);
+    const workbook: XLSX.WorkBook = { Sheets: { 'tasinmazlar': worksheet }, SheetNames: ['tasinmazlar'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    this.saveAsExcelFile(excelBuffer, 'tasinmazlar');
+  }
+
+  private saveAsExcelFile(buffer: any, fileName: string): void {
+    const data = new Blob([buffer], { type: EXCEL_TYPE });
+    saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
   }
 }
 

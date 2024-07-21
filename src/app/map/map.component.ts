@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, Output } from '@angular/core';
 import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
@@ -14,19 +14,20 @@ import { Style, Fill, Stroke, Circle as CircleStyle } from 'ol/style';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements AfterViewInit {
+  @Input() mapId: string = 'map-container';  // Add this line
   @Output() coordinateSelected = new EventEmitter<{ lon: number, lat: number }>();
 
   private map: Map;
   private vectorSource: VectorSource = new VectorSource();
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.initializeMap();
   }
 
   initializeMap(): void {
     this.map = new Map({
-      target: 'map-container',
+      target: this.mapId,  // Change this line
       layers: [
         new TileLayer({
           source: new OSM()
@@ -55,6 +56,7 @@ export class MapComponent implements OnInit {
       const coordinates = toLonLat(event.coordinate);
       this.addMarker(coordinates);
       this.coordinateSelected.emit({ lon: coordinates[0], lat: coordinates[1] });
+      this.displayCoordinates(event);
     });
   }
 
@@ -64,5 +66,15 @@ export class MapComponent implements OnInit {
     });
     this.vectorSource.clear();
     this.vectorSource.addFeature(marker);
+  }
+
+  displayCoordinates(event): void {
+    const coordinates = toLonLat(this.map.getEventCoordinate(event.originalEvent));
+    const lon = coordinates[0].toFixed(6);
+    const lat = coordinates[1].toFixed(6);
+    const coordElement = document.getElementById('coordinates');
+    if (coordElement) {
+      coordElement.innerHTML = `Koordinatlar: Enlem: ${lat}, Boylam: ${lon}`;
+    }
   }
 }

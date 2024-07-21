@@ -16,6 +16,7 @@ export class DashboardComponent implements OnInit {
   @ViewChild(UpdateComponent) updateComponent: UpdateComponent;
   tasinmazlar: Tasinmaz[] = [];
   selectedTasinmazId: number | null = null;
+  selectedCoordinates: { lon: number, lat: number };
 
   constructor(private http: HttpClient) {}
 
@@ -83,6 +84,11 @@ export class DashboardComponent implements OnInit {
     if (modal) {
       (modal as any).modal('hide');
     }
+  }
+
+  goToLocation(tasinmaz): void {
+    const coordinates = { lon: tasinmaz.koordinatX, lat: tasinmaz.koordinatY };
+    this.selectedCoordinates = coordinates;
   }
 
   exportToExcel(): void {

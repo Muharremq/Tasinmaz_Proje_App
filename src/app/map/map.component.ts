@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { Map, View } from 'ol';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
@@ -14,9 +14,9 @@ import { Style, Fill, Stroke, Circle as CircleStyle } from 'ol/style';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements AfterViewInit {
-  @Input() mapId: string = 'map-container';  // Add this line
-  @Output() coordinateSelected = new EventEmitter<{ lon: number, lat: number }>();
+export class MapComponent implements AfterViewInit, OnChanges {
+  @Input() mapId: string = 'map-container';
+  @Input() coordinates: { lon: number, lat: number };
 
   private map: Map;
   private vectorSource: VectorSource = new VectorSource();
@@ -27,9 +27,16 @@ export class MapComponent implements AfterViewInit {
     this.initializeMap();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.coordinates && changes.coordinates.currentValue) {
+      const { lon, lat } = changes.coordinates.currentValue;
+      this.setView(lon, lat);
+    }
+  }
+
   initializeMap(): void {
     this.map = new Map({
-      target: this.mapId,  // Change this line
+      target: this.mapId,
       layers: [
         new TileLayer({
           source: new OSM()
@@ -57,8 +64,6 @@ export class MapComponent implements AfterViewInit {
     this.map.on('click', (event) => {
       const coordinates = toLonLat(event.coordinate);
       this.addMarker(coordinates);
-      this.coordinateSelected.emit({ lon: coordinates[0], lat: coordinates[1] });
-      this.displayCoordinates(event);
     });
   }
 
@@ -70,6 +75,12 @@ export class MapComponent implements AfterViewInit {
     this.vectorSource.addFeature(marker);
   }
 
+  setView(lon: number, lat: number, zoom: number = 10): void {
+    this.map.getView().setCenter(fromLonLat([lon, lat]));
+    this.map.getView().setZoom(zoom);
+    this.addMarker([lon, lat]);
+  }
+
   displayCoordinates(event): void {
     const coordinates = toLonLat(this.map.getEventCoordinate(event.originalEvent));
     const lon = coordinates[0].toFixed(6);
@@ -78,10 +89,5 @@ export class MapComponent implements AfterViewInit {
     if (coordElement) {
       coordElement.innerHTML = `Koordinatlar: Enlem: ${lat}, Boylam: ${lon}`;
     }
-  }
-
-  resetMap(): void {
-    this.map.getView().setCenter(this.initialCoordinates);
-    this.map.getView().setZoom(this.initialZoom);
   }
 }

@@ -37,8 +37,10 @@
             <td>{{user.phone}}</td>
             <td>{{user.rol}}</td>
             <td>
-              <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateTasinmazModal">Düzenle</button>                
-              <button class="btn btn-danger btn-sm">Sil</button>
+              <div class="modal-footer">
+              <button type="button" class="btn btn-primary btn-sm" (click)="openUpdateModal(user.id)" data-bs-toggle="modal" data-bs-target="updateUserModal">Düzenle</button>                
+              <button type="button" class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">Sil</button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -50,5 +52,5 @@
 </div>
 <!-- add ve update User Modal  -->
 <app-user-add (userAdded)="onUserAdded()"></app-user-add>
-<app-user-update></app-user-update>
+<app-user-update (userUpdated)="refreshUserList()"></app-user-update>
 </body>

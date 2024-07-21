@@ -13,7 +13,7 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
 getUserById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/user/${id}`);
+    return this.http.get<User>(`${this.apiUrl}/${id}`);
   }
 
   addUser(user: User): Observable<User> {
@@ -23,6 +23,19 @@ getUserById(id: number): Observable<User> {
     return this.http.post<User>(this.apiUrl, user, { headers });
   }
   
-  
+  deleteUser(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  updateUser(id: number, user: any): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json-patch+json' // Update Content-Type for JSON Patch
+    });
+    return this.http.put(`${this.apiUrl}/${id}`, user, { headers });
+  }
+
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(this.apiUrl);
+  }
 
 }

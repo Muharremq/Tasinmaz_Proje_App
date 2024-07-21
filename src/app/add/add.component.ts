@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IlService } from '../services/il.service';
 import { IlceService } from '../services/ilce.service';
@@ -16,13 +16,14 @@ import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import { Style, Fill, Stroke, Circle as CircleStyle } from 'ol/style';
 import { Coordinate } from 'ol/coordinate';
+import { isPrimitive } from 'util';
 
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
   styleUrls: ['./add.component.css']
 })
-export class AddComponent implements OnInit {
+export class AddComponent implements OnInit, OnDestroy {
   @Output() tasinmazAdded = new EventEmitter<void>();
   @ViewChild('addTasinmazModal') addTasinmazModal: ElementRef;
 
@@ -64,37 +65,6 @@ export class AddComponent implements OnInit {
       koordinatY: ['', Validators.required]
     });
     this.checkForCoordinates();
-  }
-
-  onSubmit(): void {
-    if (this.addTasinmazForm.valid) {
-      const formData = this.addTasinmazForm.value;
-      const tasinmaz: Tasinmaz = {
-        id: 0,
-        name: formData.isim,
-        ada: formData.ada,
-        parsel: formData.parsel,
-        nitelik: formData.nitelik,
-        koordinatX: formData.koordinatX,
-        koordinatY: formData.koordinatY,
-        mahalleId: formData.mahalle,
-        adres: formData.adres,
-        mahalle: null,
-        selected: false
-      };
-
-      this.tasinmazService.addTasinmaz(tasinmaz).subscribe(
-        (response) => {
-          console.log('Taşınmaz başarıyla eklendi', response);
-          this.addTasinmazForm.reset();
-          this.tasinmazAdded.emit();
-          this.closeModal();
-        },
-        (error) => {
-          console.error('Taşınmaz eklenirken hata oluştu', error);
-        }
-      );
-    }
   }
 
   loadIller() {
@@ -141,12 +111,51 @@ export class AddComponent implements OnInit {
     );
   }
 
+  onSubmit(): void {
+    if (this.addTasinmazForm.valid) {
+      const formData = this.addTasinmazForm.value;
+      const tasinmaz: Tasinmaz = {
+        id: 0,
+        name: formData.isim,
+        ada: formData.ada,
+        parsel: formData.parsel,
+        nitelik: formData.nitelik,
+        koordinatX: formData.koordinatX,
+        koordinatY: formData.koordinatY,
+        mahalleId: formData.mahalle,
+        adres: formData.adres,
+        mahalle: null,
+        selected: false
+      };
+
+      this.tasinmazService.addTasinmaz(tasinmaz).subscribe(
+        (response) => {
+          console.log('Taşınmaz başarıyla eklendi', response);
+          this.addTasinmazForm.reset();
+          this.tasinmazAdded.emit();
+          this.closeModal();
+        },
+        (error) => {
+          console.error('Taşınmaz eklenirken hata oluştu', error);
+        }
+      );
+    }
+  }
+
   resetForm(): void {
     this.addTasinmazForm.reset();
     this.selectedIl = null;
     this.selectedIlce = null;
     this.ilceler = [];
     this.mahalleler = [];
+    this.selectedCoordinate = null;
+    this.vectorSource.clear();
+    this.addTasinmazForm.patchValue({
+      isim: null,
+      koordinatX: '',
+      koordinatY: ''
+    });
+
   }
 
   ngAfterViewInit(): void {
@@ -160,41 +169,49 @@ export class AddComponent implements OnInit {
     setTimeout(() => this.initializeMap(), 0); // Harita başlatmayı geciktiriyoruz
   }
 
+  ngOnDestroy(): void {
+    if (this.map) {
+      this.map.setTarget(null); // Haritayı hedeften kaldır
+      this.map = undefined;
+    }
+  }
+
   initializeMap(): void {
     if (this.map) {
-      this.map.setTarget('map-container'); // Harita zaten başlatılmışsa hedefi değiştir
-    } else {
-      this.map = new Map({
-        target: 'map-container',
-        layers: [
-          new Tile({
-            source: new OSM()
-          }),
-          new VectorLayer({
-            source: this.vectorSource,
-            style: new Style({
-              image: new CircleStyle({
-                radius: 7,
-                fill: new Fill({ color: 'red' }),
-                stroke: new Stroke({
-                  color: 'black',
-                  width: 2,
-                }),
+      this.map.setTarget(null); // Harita zaten başlatılmışsa hedefi kaldır
+      this.map = undefined;
+    }
+    
+    this.map = new Map({
+      target: 'map-container',
+      layers: [
+        new Tile({
+          source: new OSM()
+        }),
+        new VectorLayer({
+          source: this.vectorSource,
+          style: new Style({
+            image: new CircleStyle({
+              radius: 7,
+              fill: new Fill({ color: 'red' }),
+              stroke: new Stroke({
+                color: 'black',
+                width: 2,
               }),
             }),
           }),
-        ],
-        view: new View({
-          center: fromLonLat([0, 0]), // Başlangıç merkezi
-          zoom: 2 // Başlangıç zoom seviyesi
-        })
-      });
-
-      this.map.on('click', (event) => {
-        const coords = toLonLat(event.coordinate);
-        this.onCoordinateSelected(coords);
-      });
-    }
+        }),
+      ],
+      view: new View({
+        center: fromLonLat([0, 0]), // Başlangıç merkezi
+        zoom: 2 // Başlangıç zoom seviyesi
+      })
+    });
+  
+    this.map.on('click', (event) => {
+      const coords = toLonLat(event.coordinate);
+      this.onCoordinateSelected(coords);
+    });
   }
 
   onCoordinateSelected(coords: Coordinate): void {
@@ -231,6 +248,7 @@ export class AddComponent implements OnInit {
     const modal = document.getElementById('addTasinmazModal');
     if (modal) {
       (modal as any).modal('hide');
+      this.resetForm();
     }
   }
 

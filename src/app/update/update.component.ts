@@ -1,16 +1,28 @@
-import { Component, Input, OnChanges, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TasinmazService } from '../services/tasinmaz.service';
 import { IlService } from '../services/il.service';
 import { IlceService } from '../services/ilce.service';
 import { MahalleService } from '../services/mahalle.service';
+import { Map, View } from 'ol';
+import Tile from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
+import { fromLonLat, toLonLat } from 'ol/proj';
+import { Feature } from 'ol';
+import { Point } from 'ol/geom';
+import VectorSource from 'ol/source/Vector';
+import VectorLayer from 'ol/layer/Vector';
+import { Style, Fill, Stroke, Circle as CircleStyle } from 'ol/style';
+import { Coordinate } from 'ol/coordinate';
+
+
 
 @Component({
   selector: 'app-update',
   templateUrl: './update.component.html',
   styleUrls: ['./update.component.css']
 })
-export class UpdateComponent implements OnChanges, OnInit {
+export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
   @Input() tasinmazId: number;
   @Output() tasinmazUpdated = new EventEmitter<void>(); // Define EventEmitter
 
@@ -20,6 +32,12 @@ export class UpdateComponent implements OnChanges, OnInit {
   mahalleler: any[] = [];
   selectedIl: number; 
   selectedIlce: number;
+  showMap = false;
+  selectedCoordinate: { lon: number, lat: number } | null = null;
+  private map: Map | undefined;
+  private vectorSource: VectorSource = new VectorSource();
+  initialCenter = fromLonLat([35.2433, 38.9637]);
+  initialZoom = 2;
 
   constructor(
     private fb: FormBuilder,
@@ -138,11 +156,107 @@ export class UpdateComponent implements OnChanges, OnInit {
         response => {
           console.log('Taşınmaz başarıyla güncellendi', response);
           this.tasinmazUpdated.emit(); // Emit the event
+          this.closeUpdateModal();
         },
         error => {
           console.error('Taşınmaz güncellenirken hata oluştu', error);
         }
       );
     }
+  }
+
+  private closeUpdateModal(): void {
+    const modal = document.getElementById('updateTasinmazModal');
+    if (modal) {
+      (modal as any).modal('hide');
+      this.ngOnDestroy();
+    }
+  }
+
+  openMap(): void {
+    this.showMap = true;
+    setTimeout(() => this.initializeMap(), 0);
+  }
+
+  ngOnDestroy(): void {
+    if (this.map) {
+      this.map.setTarget(null);
+      this.map = undefined;
+    }
+  }
+  initializeMap(): void {
+    if (this.map) {
+      this.map.setTarget(null); // Harita zaten başlatılmışsa hedefi kaldır
+      this.map = undefined;
+    }
+    
+    this.map = new Map({
+      target: 'map-container',
+      layers: [
+        new Tile({
+          source: new OSM()
+        }),
+        new VectorLayer({
+          source: this.vectorSource,
+          style: new Style({
+            image: new CircleStyle({
+              radius: 7,
+              fill: new Fill({ color: 'red' }),
+              stroke: new Stroke({
+                color: 'black',
+                width: 2,
+              }),
+            }),
+          }),
+        }),
+      ],
+      view: new View({
+        center: fromLonLat([0, 0]), // Başlangıç merkezi
+        zoom: 2 // Başlangıç zoom seviyesi
+      })
+    });
+  
+    this.map.on('click', (event) => {
+      const coords = toLonLat(event.coordinate);
+      this.onCoordinateSelected(coords);
+    });
+  }
+  
+
+  onCoordinateSelected(coords: Coordinate): void {
+    this.selectedCoordinate = {
+      lon: coords[0],
+      lat: coords[1],
+    };
+    this.updateTasinmazForm.patchValue({
+      koordinatX: this.selectedCoordinate.lon,
+      koordinatY: this.selectedCoordinate.lat
+    });
+
+    // Yeni işaretçi ekleyin
+    const feature = new Feature({
+      geometry: new Point(fromLonLat([this.selectedCoordinate.lon, this.selectedCoordinate.lat])),
+    });
+    this.vectorSource.clear(); // Önceki işaretçileri temizle
+    this.vectorSource.addFeature(feature);
+
+    this.showMap = false;
+  }
+
+  checkForCoordinates() {
+    const koordinatX = localStorage.getItem('koordinatX');
+    const koordinatY = localStorage.getItem('koordinatY');
+    if (koordinatX && koordinatY) {
+      this.updateTasinmazForm.patchValue({ koordinatX, koordinatY });
+      localStorage.removeItem('koordinatX');
+      localStorage.removeItem('koordinatY');
+    }
+  }
+
+  onMapClick(event: { lon: number; lat: number }) {
+    this.updateTasinmazForm.patchValue({
+      koordinatX: event.lon,
+      koordinatY: event.lat
+    });
   }
 }

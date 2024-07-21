@@ -4,7 +4,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="addTasinmazModalLabel">Taşınmaz Ekle</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
         </div>
         <div class="modal-body">
           <form [formGroup]="addTasinmazForm" (ngSubmit)="onSubmit()">
@@ -55,9 +55,9 @@
               <input type="text" id="koordinatY" formControlName="koordinatY" class="form-control">
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeModal()">Close</button>
               <button type="button" class="btn btn-primary" (click)="openMap()">Koordinat Seç</button>
-              <button type="submit" class="btn btn-primary">Kaydet</button>
+              <button type="button" class="btn btn-primary" (click)="onSubmit()">Save changes</button>
             </div>
           </form>
         </div>

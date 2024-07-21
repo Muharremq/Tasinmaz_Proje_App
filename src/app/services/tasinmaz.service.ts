@@ -31,7 +31,5 @@ export class TasinmazService {
       'Content-Type': 'application/json'
     });
     return this.http.put(`${this.apiUrl}/${id}`, tasinmaz, { headers });
-  }
-  
-  
+  } 
 }

@@ -54,10 +54,14 @@
             <label for="koordinatY" class="form-label">Koordinat Bilgileri Y</label>
             <input type="text" class="form-control" id="koordinatY" formControlName="koordinatY" required>
           </div>
-          <button type="submit" class="btn btn-primary">Güncelle</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vazgeç</button>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            <button type="button" class="btn btn-primary" (click)="openMap()">Koordinat Seç</button>
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+          </div>
         </form>
       </div>
+      <div *ngIf="showMap" id="map-container" style="width: 100%; height: 400px;"></div>
     </div>
   </div>
 </div>

@@ -16,14 +16,12 @@ export class DeleteComponent implements OnInit {
   ngOnInit() {
   }
   confirmDelete(): void {
-    if (confirm('Bu taşınmazı silmek istediğinize emin misiniz?')) {
+     
       this.tasinmazService.deleteTasinmaz(this.tasinmazId).subscribe(() => {
         alert('Taşınmaz başarıyla silindi.');
         this.tasinmazDeleted.emit(this.tasinmazId);
-      }, error => {
-        console.error('Silme hatası:', error);
-        alert('Silme sırasında bir hata oluştu.');
       });
-    }
+    
   }
+  
 }

@@ -1,16 +1,9 @@
 export class Log {
     logId : number;
-    logDate : Date;
-    logLevel : string;
-    logMessage : string;
-    logException : string;
-    logMethod : string;
-    logController : string;
-    logAction : string;
-    logUserId : number;
-    logUserName : string;
-    logUserEmail : string;
-    logUserIp : string;
-    logUserAgent : string;
-    logUserRequest : string;
+    KullaniciId : number;
+    Durum : string;
+    IslemTip : string;
+    Aciklama : string;
+    TarihveSaati : Date;
+    KullaniciTipi : string;
 }

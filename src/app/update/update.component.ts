@@ -14,8 +14,7 @@ import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import { Style, Fill, Stroke, Circle as CircleStyle } from 'ol/style';
 import { Coordinate } from 'ol/coordinate';
-
-
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-update',
@@ -44,7 +43,8 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
     private tasinmazService: TasinmazService,
     private ilService: IlService,
     private ilceService: IlceService,
-    private mahalleService: MahalleService
+    private mahalleService: MahalleService,
+    private authService: AuthService
   ) {
     this.updateTasinmazForm = this.fb.group({
       isim: ['', Validators.required],
@@ -140,28 +140,35 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
 
   onSubmit() {
     if (this.updateTasinmazForm.valid) {
-      const updatedTasinmaz = {
-        id: this.tasinmazId,
-        name: this.updateTasinmazForm.value.isim,
-        ada: this.updateTasinmazForm.value.ada,
-        parsel: this.updateTasinmazForm.value.parsel,
-        nitelik: this.updateTasinmazForm.value.nitelik,
-        koordinatX: this.updateTasinmazForm.value.koordinatX,
-        koordinatY: this.updateTasinmazForm.value.koordinatY,
-        mahalleId: this.updateTasinmazForm.value.mahalle,
-        adres: this.updateTasinmazForm.value.adres
-      };
-  
-      this.tasinmazService.updateTasinmaz(this.tasinmazId, updatedTasinmaz).subscribe(
-        response => {
-          console.log('Taşınmaz başarıyla güncellendi', response);
-          this.tasinmazUpdated.emit(); // Emit the event
-          this.closeUpdateModal();
-        },
-        error => {
-          console.error('Taşınmaz güncellenirken hata oluştu', error);
-        }
-      );
+      const formData = this.updateTasinmazForm.value;
+      const userId = this.authService.getCurrentUserId(); // userId'yi alın
+      if (userId) {
+        const updatedTasinmaz = {
+          id: this.tasinmazId,
+          name: formData.isim,
+          ada: formData.ada,
+          parsel: formData.parsel,
+          nitelik: formData.nitelik,
+          koordinatX: formData.koordinatX,
+          koordinatY: formData.koordinatY,
+          mahalleId: formData.mahalle,
+          adres: formData.adres,
+          userId: userId // userId'yi ekleyin
+        };
+
+        this.tasinmazService.updateTasinmaz(this.tasinmazId, updatedTasinmaz).subscribe(
+          response => {
+            console.log('Taşınmaz başarıyla güncellendi', response);
+            this.tasinmazUpdated.emit(); // Emit the event
+            this.closeUpdateModal();
+          },
+          error => {
+            console.error('Taşınmaz güncellenirken hata oluştu', error);
+          }
+        );
+      } else {
+        console.error('User ID bulunamadı');
+      }
     }
   }
 
@@ -189,7 +196,7 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
       this.map.setTarget(null); // Harita zaten başlatılmışsa hedefi kaldır
       this.map = undefined;
     }
-    
+
     this.map = new Map({
       target: 'map-container',
       layers: [
@@ -215,13 +222,12 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
         zoom: 2 // Başlangıç zoom seviyesi
       })
     });
-  
+
     this.map.on('click', (event) => {
       const coords = toLonLat(event.coordinate);
       this.onCoordinateSelected(coords);
     });
   }
-  
 
   onCoordinateSelected(coords: Coordinate): void {
     this.selectedCoordinate = {

@@ -11,4 +11,5 @@ export interface Tasinmaz {
   mahalle?: any;
   selected?: boolean;
   selectedTasinmazId?: number;
+  userId: number;
 }

@@ -28,10 +28,8 @@ getUserById(id: number): Observable<User> {
   }
 
   updateUser(id: number, user: any): Observable<any> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json-patch+json' // Update Content-Type for JSON Patch
-    });
-    return this.http.put(`${this.apiUrl}/${id}`, user, { headers });
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put<User>(`${this.apiUrl}/${id}`, user, { headers });
   }
 
   getUsers(): Observable<User[]> {

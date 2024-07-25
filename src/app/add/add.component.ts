@@ -16,8 +16,7 @@ import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import { Style, Fill, Stroke, Circle as CircleStyle } from 'ol/style';
 import { Coordinate } from 'ol/coordinate';
-import { isPrimitive } from 'util';
-
+import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
@@ -47,6 +46,7 @@ export class AddComponent implements OnInit, OnDestroy {
     private ilceService: IlceService,
     private mahalleService: MahalleService,
     private router: Router,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -114,34 +114,38 @@ export class AddComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.addTasinmazForm.valid) {
       const formData = this.addTasinmazForm.value;
-      const tasinmaz: Tasinmaz = {
-        id: 0,
-        name: formData.isim,
-        ada: formData.ada,
-        parsel: formData.parsel,
-        nitelik: formData.nitelik,
-        koordinatX: formData.koordinatX,
-        koordinatY: formData.koordinatY,
-        mahalleId: formData.mahalle,
-        adres: formData.adres,
-        mahalle: null,
-        selected: false
-      };
-
-      this.tasinmazService.addTasinmaz(tasinmaz).subscribe(
-        (response) => {
-          console.log('Taşınmaz başarıyla eklendi', response);
-          this.addTasinmazForm.reset();
-          this.tasinmazAdded.emit();
-          this.closeModal();
-        },
-        (error) => {
-          console.error('Taşınmaz eklenirken hata oluştu', error);
-        }
-      );
+      const userId = this.authService.getCurrentUserId();
+      if (userId) {
+        const tasinmaz: Tasinmaz = {
+          id: 0,
+          name: formData.isim,
+          ada: formData.ada,
+          parsel: formData.parsel,
+          nitelik: formData.nitelik,
+          koordinatX: formData.koordinatX,
+          koordinatY: formData.koordinatY,
+          mahalleId: formData.mahalle,
+          adres: formData.adres,
+          userId: Number(userId), // Parse userId to number
+          mahalle: null,
+          selected: false
+        };  
+        this.tasinmazService.addTasinmaz(tasinmaz).subscribe(
+          (response) => {
+            console.log('Taşınmaz başarıyla eklendi', response);
+            this.addTasinmazForm.reset();
+            this.tasinmazAdded.emit();
+            this.closeModal();
+          },
+          (error) => {
+            console.error('Taşınmaz eklenirken hata oluştu', error);
+          }
+        );
+      } else {
+        console.error('User ID bulunamadı');
+      }
     }
   }
-
   resetForm(): void {
     this.addTasinmazForm.reset();
     this.selectedIl = null;

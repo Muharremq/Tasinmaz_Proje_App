@@ -15,6 +15,8 @@ import { UserComponent } from './user/user.component';
 import { UserAddComponent } from './user/user-add/user-add.component';
 import { UserUpdateComponent } from './user/user-update/user-update.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { JwtModule } from '@auth0/angular-jwt';
+import { AuthService } from './services/auth.service';
 
 
 
@@ -31,17 +33,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     NavbarComponent,
     UserComponent,
     UserAddComponent,
-    UserUpdateComponent
+    UserUpdateComponent,
+    
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    JwtModule
     
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [ AuthService],
+  bootstrap: [AppComponent],
+  entryComponents: [UserAddComponent, UserUpdateComponent, UpdateComponent, AddComponent]
 })
 export class AppModule { }

@@ -8,13 +8,10 @@ import { AuthService } from '../services/auth.service';
 })
 export class LoginComponent implements OnInit {
 
-
-  constructor( private authService: AuthService) { }
+  constructor(private authService:AuthService) { }
 
   loginUser:any = {}
-
-
-  ngOnInit() {
+  ngOnInit(): void {
     const container = document.getElementById('container');
     const registerBtns = document.querySelectorAll('#register');
     const loginBtns = document.querySelectorAll('#login');
@@ -32,15 +29,15 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  
   login(){
     this.authService.login(this.loginUser);
- }
- logOut(){
-   this.authService.logOut();
- }
+  }
 
- get isAuthenticated(){
-   return this.authService.loggedIn();
- }
+  logOut(){
+    this.authService.logOut();
+  }
+
+  get isAuthenticated(){
+    return this.authService.loggedIn();
+  }
 }

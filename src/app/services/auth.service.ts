@@ -11,61 +11,64 @@ import { RegisterUser } from '../models/registerUser';
 export class AuthService {
 
   constructor( 
-    private http: HttpClient,
+    private httpClient: HttpClient,
     private router:Router) { }
 
   path ="https://localhost:44348/api/Auth/";
 
-  TOKEN_KEY = "token";
   userToken: any;
-  decoderToken: any;
+  decodedToken: any;
   jwtHelper: JwtHelperService = new JwtHelperService();
+  TOKEN_KEY="token"
 
   login(LoginUser: LoginUser) {
     let headers = new HttpHeaders();
     headers = headers.append("Content-Type", "application/json");
-    this.http.post(this.path + "login", LoginUser, { headers: headers })
-    .subscribe((data: any) => {
-        this.saveToken(data.token);
+    this.httpClient.post(this.path + "login", LoginUser, { headers: headers })
+      .subscribe((data: any) => {
+        this.saveToken(data.token); 
         const decodedToken = this.jwtHelper.decodeToken(data.token);
-        console.log(decodedToken);
-        this.router.navigateByUrl('/dashboard');
-    },error => {
-      console.error("Login error: ", error);
+        console.log(decodedToken); 
+        this.router.navigateByUrl("/table-list");
+    }, error => {
+        console.error("Login error: ", error);
     });
-  }
-  saveToken(token) {
-    localStorage.setItem(this.TOKEN_KEY, token);
-  }
+}
 
-  register(RegisterUser: RegisterUser){
-    let headers = new HttpHeaders();
-    headers = headers.append('Content-Type', 'application/json');
-    this.http.post(this.path + 'register', RegisterUser, { headers: headers })
-    .subscribe(data => {
-    
-    });
-  }
+    saveToken(token: string) {
+    localStorage.setItem('token', token);
+    }
 
-  logOut(){
-    localStorage.removeItem(this.TOKEN_KEY);
-  }
+    register(RegisterUser:RegisterUser){
+      let headers = new HttpHeaders();
+      headers = headers.append("Content-Type", "application/json")
+      this.httpClient.post(this.path+"register",RegisterUser,{headers:headers})
+      .subscribe(data => {
+  
+      });
+    }
 
-  getToken(): string| null {
-    return localStorage.getItem(this.TOKEN_KEY);
-  }
-
-  loggedIn(){
+    getToken(): string | null {
+      return localStorage.getItem(this.TOKEN_KEY);
+    }
+  
+    logOut(){
+      localStorage.removeItem(this.TOKEN_KEY)
+    }
+  
+   loggedIn(){
     const token = this.getToken();
-    return !!token && !this.jwtHelper.isTokenExpired(token);  
-  }
-  get token(){
-    return localStorage.getItem(this.TOKEN_KEY);
-  }
-
-  getCurrentUserId(){
-    return localStorage.getItem(this.TOKEN_KEY);
-  }
-
-
+    return !!token && !this.jwtHelper.isTokenExpired(token);  }
+  
+    get token(){
+      return localStorage.getItem(this.TOKEN_KEY);
+    }
+    getCurrentUserId(): string | null {
+      const token = this.getToken();
+      if (token) {
+        const decodedToken = this.jwtHelper.decodeToken(token);
+        return decodedToken.nameid;
+      }
+      return null;
+    }
 }

@@ -5,6 +5,8 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { AddComponent } from '../add/add.component';
 import { UpdateComponent } from '../update/update.component';
+import { AuthService } from '../services/auth.service'; // AuthService import
+import { TasinmazService } from '../services/tasinmaz.service'; // TasinmazService import
 
 @Component({
   selector: 'app-dashboard',
@@ -18,17 +20,24 @@ export class DashboardComponent implements OnInit {
   selectedTasinmazId: number | null = null;
   selectedCoordinates: { lon: number, lat: number };
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService, // AuthService injection
+    private tasinmazService: TasinmazService // TasinmazService injection
+  ) {}
 
   ngOnInit() {
     this.getTasinmazlar();
   }
 
   getTasinmazlar() {
-    this.http.get<Tasinmaz[]>('https://localhost:44348/api/TasinmazBilgi').subscribe((data) => {
-      this.tasinmazlar = data;
-      this.tasinmazlar.forEach(tasinmaz => tasinmaz.selected = false);
-    });
+    const userId = this.authService.getCurrentUserId();
+    if (userId) {
+      this.tasinmazService.getTasinmazlarByUserId(Number(userId)).subscribe((data) => {
+        this.tasinmazlar = data;
+        this.tasinmazlar.forEach(tasinmaz => tasinmaz.selected = false);
+      });
+    }
   }
 
   onTasinmazAdded() {

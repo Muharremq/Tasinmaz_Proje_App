@@ -32,4 +32,8 @@ export class TasinmazService {
     });
     return this.http.put(`${this.apiUrl}/${id}`, tasinmaz, { headers });
   } 
+  
+  getTasinmazlarByUserId(userId: number): Observable<Tasinmaz[]> {
+    return this.http.get<Tasinmaz[]>(`${this.apiUrl}/user/${userId}`);
+  }
 }

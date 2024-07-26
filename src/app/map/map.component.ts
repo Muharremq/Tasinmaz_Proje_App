@@ -12,9 +12,6 @@ import ScaleLine from 'ol/control/ScaleLine';
 import XYZ from 'ol/source/XYZ';
 import { defaults as defaultControls } from 'ol/control';
 
-
-
-
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -24,7 +21,6 @@ export class MapComponent implements AfterViewInit, OnChanges {
   @Input() mapId: string = 'map-container';
   @Input() coordinates: { lon: number, lat: number };
   @Input() propertyLocations: { lon: number, lat: number }[] = [];
-
 
   private map: Map;
   private vectorSource: VectorSource = new VectorSource();

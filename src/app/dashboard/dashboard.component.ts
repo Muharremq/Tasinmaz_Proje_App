@@ -19,6 +19,7 @@ export class DashboardComponent implements OnInit {
   tasinmazlar: Tasinmaz[] = [];
   selectedTasinmazId: number | null = null;
   selectedCoordinates: { lon: number, lat: number };
+  propertyLocations: { lon: number, lat: number }[] = [];
 
   constructor(
     private http: HttpClient,
@@ -32,17 +33,11 @@ export class DashboardComponent implements OnInit {
 
   getTasinmazlar() {
     const userId = this.authService.getCurrentUserId();
-    const userRole = this.authService.getRole();
-
-    if (userRole === 'admin') {
-      this.tasinmazService.getAllTasinmazlar().subscribe((data) => {
-        this.tasinmazlar = data;
-        this.tasinmazlar.forEach(tasinmaz => tasinmaz.selected = false);
-      });
-    } else if (userId) {
+    if (userId) {
       this.tasinmazService.getTasinmazlarByUserId(Number(userId)).subscribe((data) => {
         this.tasinmazlar = data;
         this.tasinmazlar.forEach(tasinmaz => tasinmaz.selected = false);
+        this.propertyLocations = this.tasinmazlar.map(t => ({ lon: t.koordinatX, lat: t.koordinatY }));
       });
     }
   }

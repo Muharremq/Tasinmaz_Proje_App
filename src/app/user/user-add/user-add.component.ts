@@ -1,8 +1,9 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
+import { AuthService } from 'src/app/services/auth.service';
 import * as bootstrap from 'bootstrap';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-add',
@@ -18,62 +19,46 @@ export class UserAddComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit() {
+    this.createAddUserForm();
+  }
+
+  createAddUserForm() {
     this.addUserForm = this.fb.group({
       name: ['', Validators.required],
       surname: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       phone: ['', Validators.required],
-      rol: ['', Validators.required],
+      role: ['', Validators.required],
     });
   }
 
-  onSubmit(): void {
+  register() {
     if (this.addUserForm.valid) {
-      const formData = this.addUserForm.value;
-      const user: User = {
-        id: 0,
-        name: formData.name,
-        surname: formData.surname,
-        email: formData.email,
-        password: formData.password,
-        phone: formData.phone,
-        rol: formData.rol,
-      };
-
-      this.userService.addUser(user).subscribe(
-        (response) => {
-          console.log('Kullanıcı başarıyla eklendi.');
-          this.addUserForm.reset();
+      const registerUser = Object.assign({}, this.addUserForm.value);
+      this.authService.register(registerUser).subscribe(
+        () => {
           this.userAdded.emit();
-          this.closeModal();
+          const modalElement = this.addUserModal.nativeElement;
+          const modalInstance = bootstrap.Modal.getInstance(modalElement);
+          modalInstance.hide();
+          this.resetForm();
+          this.router.navigateByUrl('/user');
         },
-        (error) => {
-          console.log('Kullanıcı eklenirken hata oluştu.', error);
-          if (error.status === 400) {
-            if (error.error.errors.Rol) {
-              console.log('Rol validation error:', error.error.errors.Rol);
-            }
-            if (error.error.errors.Email) {
-              console.log('Email validation error:', error.error.errors.Email);
-            }
-          }
+        error => {
+          console.error("User registration error: ", error);
         }
       );
     }
   }
 
-  resetForm(): void {
+  //reset form
+  resetForm() {
     this.addUserForm.reset();
-  }
-
-  closeModal(): void {
-    if (this.addUserModal) {
-      const modal: any = new bootstrap.Modal(this.addUserModal.nativeElement);
-      modal.hide();
-    }
   }
 }

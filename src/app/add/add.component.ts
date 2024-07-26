@@ -126,10 +126,10 @@ export class AddComponent implements OnInit, OnDestroy {
           koordinatY: formData.koordinatY,
           mahalleId: formData.mahalle,
           adres: formData.adres,
-          userId: Number(userId), // Parse userId to number
+          userId: Number(userId),
           mahalle: null,
           selected: false
-        };  
+        }; 
         this.tasinmazService.addTasinmaz(tasinmaz).subscribe(
           (response) => {
             console.log('Taşınmaz başarıyla eklendi', response);

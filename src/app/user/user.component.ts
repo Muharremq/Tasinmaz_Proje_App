@@ -7,6 +7,7 @@ import { UserService } from '../services/user.service';
 import { UserUpdateComponent } from './user-update/user-update.component';
 import { UserAddComponent } from './user-add/user-add.component';
 import * as bootstrap from 'bootstrap';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-user',
@@ -23,17 +24,35 @@ export class UserComponent implements OnInit {
 
   constructor(
     private http: HttpClient, 
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
     this.getUsers();
   }
 
-  getUsers() {
+  /*getUsers() {
     return this.http.get<User[]>("https://localhost:44348/api/User").subscribe((data) => {
       this.users = data;
     });
+  }*/
+
+    getUsers() {
+      const userId = this.authService.getCurrentUserId();
+      const userRole = this.authService.getRole();
+
+      if (userRole === 'admin') {
+        this.userService.getAllUsers().subscribe((data) => {
+          this.users = data;
+          this.users.forEach(user => user.selected = false);
+        });
+      }else if (userId) {
+        this.userService.getUsers().subscribe((data) => {
+          this.users = data;
+          this.users.forEach(user => user.selected = false);
+        });
+    }
   }
   onUserAdded() {
     this.getUsers();
@@ -66,14 +85,16 @@ export class UserComponent implements OnInit {
   }
 
 
-  deleteUser(id: number) {
+  deleteUser(userId: number) {
     if (confirm('Are you sure you want to delete this user?')) {
-      this.userService.deleteUser(id).subscribe(() => {
-        this.users = this.users.filter(user => user.id !== id);
-        console.log('User deleted successfully');
-      }, error => {
-        console.error('Error deleting user', error);
-      });
+      this.userService.deleteUser(userId).subscribe(
+        () => {
+          console.log('User deleted successfully');
+          this.refreshUserList();},
+        error => {
+          console.error('Error deleting user', error);
+        }
+      );
     }
   }
 

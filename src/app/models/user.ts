@@ -7,4 +7,5 @@ export class User {
   password: string;
   phone: string;
   rol: string; 
+  selected?: boolean;
 }

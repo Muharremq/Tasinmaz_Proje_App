@@ -33,10 +33,6 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.loginUser);
   }
 
-  logOut(){
-    this.authService.logOut();
-  }
-
   get isAuthenticated(){
     return this.authService.loggedIn();
   }

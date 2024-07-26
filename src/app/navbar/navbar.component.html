@@ -5,17 +5,17 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="authService.loggedIn()">
           <a class="nav-link active" aria-current="page" [routerLink]="['/dashboard']">Mevcut Taşınmazlar Listesi</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="authService.isAdmin()">
           <a class="nav-link" [routerLink]="['/user']">Kullanıcı İşlemleri</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="authService.isAdmin()">
           <a class="nav-link" [routerLink]="['/log']">Log İşlemleri</a>
         </li>
       </ul>
     </div>
   </div>
-  <button class="btn btn-outline-danger" *ngIf="!isAuthenticated" (click)="logOut()" type="submit">Çıkış Yap</button>
+  <button class="btn btn-outline-danger" *ngIf="authService.loggedIn()" (click)="logOut()" type="submit">Çıkış Yap</button>
 </nav>

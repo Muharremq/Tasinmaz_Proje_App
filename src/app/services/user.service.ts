@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../models/user';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,13 @@ export class UserService {
 
   private apiUrl = 'https://localhost:44348/api/User'; // Gerçek API URL'inizi buraya ekleyin
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService) { }
+
+    private getAuthHeaders(): HttpHeaders {
+      return new HttpHeaders().set('Authorization', `Bearer ${this.authService.getToken()}`);
+    }
 
 getUserById(id: number): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/${id}`);
@@ -36,4 +43,9 @@ getUserById(id: number): Observable<User> {
     return this.http.get<User[]>(this.apiUrl);
   }
 
+  getAllUsers(): Observable<User[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<User[]>(this.apiUrl, { headers });
+
+}
 }

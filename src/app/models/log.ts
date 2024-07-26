@@ -6,4 +6,5 @@ export class Log {
     Aciklama : string;
     TarihveSaati : Date;
     KullaniciTipi : string;
+    selected: boolean;
 }

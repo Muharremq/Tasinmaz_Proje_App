@@ -20,6 +20,7 @@ export class AuthService {
   decodedToken: any;
   jwtHelper: JwtHelperService = new JwtHelperService();
   TOKEN_KEY="token"
+  private ROLE_KEY = "role";
 
   login(LoginUser: LoginUser) {
     let headers = new HttpHeaders();
@@ -28,8 +29,9 @@ export class AuthService {
       .subscribe((data: any) => {
         this.saveToken(data.token); 
         const decodedToken = this.jwtHelper.decodeToken(data.token);
+        localStorage.setItem(this.ROLE_KEY, decodedToken.role);
         console.log(decodedToken); 
-        this.router.navigateByUrl("/table-list");
+        this.router.navigateByUrl("/dashboard");
     }, error => {
         console.error("Login error: ", error);
     });
@@ -39,14 +41,12 @@ export class AuthService {
     localStorage.setItem('token', token);
     }
 
-    register(RegisterUser:RegisterUser){
+    register(RegisterUser: RegisterUser) {
       let headers = new HttpHeaders();
-      headers = headers.append("Content-Type", "application/json")
-      this.httpClient.post(this.path+"register",RegisterUser,{headers:headers})
-      .subscribe(data => {
-  
-      });
+      headers = headers.append("Content-Type", "application/json");
+      return this.httpClient.post(this.path + "register", RegisterUser, { headers: headers });
     }
+    
 
     getToken(): string | null {
       return localStorage.getItem(this.TOKEN_KEY);
@@ -54,6 +54,7 @@ export class AuthService {
   
     logOut(){
       localStorage.removeItem(this.TOKEN_KEY)
+      localStorage.removeItem(this.ROLE_KEY)
     }
   
    loggedIn(){
@@ -70,5 +71,13 @@ export class AuthService {
         return decodedToken.nameid;
       }
       return null;
+    }
+
+    getRole(): string | null {
+      return localStorage.getItem(this.ROLE_KEY);
+    }
+
+    isAdmin(): boolean {
+      return this.getRole() === "admin";
     }
 }

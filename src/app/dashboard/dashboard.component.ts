@@ -32,7 +32,14 @@ export class DashboardComponent implements OnInit {
 
   getTasinmazlar() {
     const userId = this.authService.getCurrentUserId();
-    if (userId) {
+    const userRole = this.authService.getRole();
+
+    if (userRole === 'admin') {
+      this.tasinmazService.getAllTasinmazlar().subscribe((data) => {
+        this.tasinmazlar = data;
+        this.tasinmazlar.forEach(tasinmaz => tasinmaz.selected = false);
+      });
+    } else if (userId) {
       this.tasinmazService.getTasinmazlarByUserId(Number(userId)).subscribe((data) => {
         this.tasinmazlar = data;
         this.tasinmazlar.forEach(tasinmaz => tasinmaz.selected = false);
@@ -110,6 +117,10 @@ export class DashboardComponent implements OnInit {
   private saveAsExcelFile(buffer: any, fileName: string): void {
     const data = new Blob([buffer], { type: EXCEL_TYPE });
     saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
+  }
+
+  get isAuthenticated(){
+    return this.authService.loggedIn();
   }
 }
 

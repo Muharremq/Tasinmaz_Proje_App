@@ -1,7 +1,8 @@
+<body *ngIf="isAuthenticated">
 <app-navbar></app-navbar>
 <app-map [mapId]="'dashboardMap'" [coordinates]="selectedCoordinates"></app-map>
 <div id="coordinates" style="margin-top: 10px;"></div>
-<body>
+
   <div class="container">
     <div class="table-responsive">
       <div class="table-wrapper">

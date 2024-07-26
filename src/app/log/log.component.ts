@@ -4,6 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { Xliff } from '@angular/compiler';
+import { Observable } from 'rxjs';
+import { HttpHeaders } from '@angular/common/http';
+import { AuthService } from '../services/auth.service';
 
 
 @Component({
@@ -15,16 +18,43 @@ export class LogComponent implements OnInit {
 
   logs: Log[] = [];
 
-  constructor( private http: HttpClient) { }
+  constructor( private http: HttpClient, private authService: AuthService) { }
 
+  private apiUrl = 'https://localhost:44348/api/Log'; // API URL
+  
+  private getAuthHeaders(): HttpHeaders {
+    return new HttpHeaders().set('Authorization', `Bearer ${this.authService.getToken()}`);
+  }
   ngOnInit() {
     this.getlogs();
   }
 
-  getlogs(){
+ /* getlogs(){
     return this.http.get<Log[]>("https://localhost:44348/api/Log").subscribe((data) => {
       this.logs = data;
     });
+  }*/
+
+    getlogs() {
+      const userId = this.authService.getCurrentUserId();
+      const userRole = this.authService.getRole();
+
+      if (userRole === 'admin') {
+        this.getAllLogs().subscribe((data) => {
+          this.logs = data;
+          this.logs.forEach(log => log.selected = false);
+        });
+      }else if (userId) {
+        this.getAllLogs().subscribe((data) => {
+          this.logs = data;
+          this.logs.forEach(log => log.selected = false);
+        });
+    }
+  }
+
+  getAllLogs(): Observable<Log[]> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.authService.getToken()}`);
+    return this.http.get<Log[]>(this.apiUrl, { headers });
   }
 
   // Export Excel Buttonu

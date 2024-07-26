@@ -17,6 +17,8 @@ import { UserUpdateComponent } from './user/user-update/user-update.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { JwtModule } from '@auth0/angular-jwt';
 import { AuthService } from './services/auth.service';
+import { TasinmazService } from './services/tasinmaz.service';
+import { AdminGuardService } from './services/admin-guard.service';
 
 
 
@@ -45,7 +47,7 @@ import { AuthService } from './services/auth.service';
     JwtModule
     
   ],
-  providers: [ AuthService],
+  providers: [ TasinmazService, AuthService, AdminGuardService],
   bootstrap: [AppComponent],
   entryComponents: [UserAddComponent, UserUpdateComponent, UpdateComponent, AddComponent]
 })

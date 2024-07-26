@@ -7,6 +7,7 @@ import { Xliff } from '@angular/compiler';
 import { Observable } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
+import { LogService } from '../services/log.service';
 
 
 @Component({
@@ -18,45 +19,37 @@ export class LogComponent implements OnInit {
 
   logs: Log[] = [];
 
-  constructor( private http: HttpClient, private authService: AuthService) { }
+  constructor( 
+    private http: HttpClient, 
+    private authService: AuthService,
+    private logService: LogService) { }
 
   private apiUrl = 'https://localhost:44348/api/Log'; // API URL
   
-  private getAuthHeaders(): HttpHeaders {
-    return new HttpHeaders().set('Authorization', `Bearer ${this.authService.getToken()}`);
-  }
+
   ngOnInit() {
-    this.getlogs();
+    this.getLogs();
   }
 
- /* getlogs(){
-    return this.http.get<Log[]>("https://localhost:44348/api/Log").subscribe((data) => {
-      this.logs = data;
-    });
-  }*/
-
-    getlogs() {
-      const userId = this.authService.getCurrentUserId();
-      const userRole = this.authService.getRole();
-
-      if (userRole === 'admin') {
-        this.getAllLogs().subscribe((data) => {
-          this.logs = data;
-          this.logs.forEach(log => log.selected = false);
-        });
-      }else if (userId) {
-        this.getAllLogs().subscribe((data) => {
-          this.logs = data;
-          this.logs.forEach(log => log.selected = false);
-        });
+  private getAuthHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+    if (token) {
+      return new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    }
+    return new HttpHeaders();
+  }
+  
+  getLogs() {
+    const userId = this.authService.getCurrentUserId();
+    const userRole = this.authService.getRole();
+  
+    if (userRole === 'admin' || userId) {
+      this.logService.getAllLogs().subscribe((data: Log[]) => {
+        this.logs = data;
+        this.logs.forEach(log => log.selected = false);
+      });
     }
   }
-
-  getAllLogs(): Observable<Log[]> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.authService.getToken()}`);
-    return this.http.get<Log[]>(this.apiUrl, { headers });
-  }
-
   // Export Excel Buttonu
   exportToExcel(): void {
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.logs);

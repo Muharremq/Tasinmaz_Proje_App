@@ -42,13 +42,10 @@ export class TasinmazService {
   }
 
   updateTasinmaz(id: number, tasinmaz: any): Observable<any> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    headers.append('Authorization', `Bearer ${this.authService.getToken()}`);
+    const headers = this.getAuthHeaders().set('Content-Type', 'application/json');
     return this.http.put(`${this.apiUrl}/${id}`, tasinmaz, { headers });
   }
-
+  
   getTasinmazlarByUserId(userId: number): Observable<Tasinmaz[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<Tasinmaz[]>(`${this.apiUrl}/user/${userId}`, { headers });

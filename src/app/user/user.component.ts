@@ -32,12 +32,6 @@ export class UserComponent implements OnInit {
     this.getUsers();
   }
 
-  /*getUsers() {
-    return this.http.get<User[]>("https://localhost:44348/api/User").subscribe((data) => {
-      this.users = data;
-    });
-  }*/
-
     getUsers() {
       const userId = this.authService.getCurrentUserId();
       const userRole = this.authService.getRole();

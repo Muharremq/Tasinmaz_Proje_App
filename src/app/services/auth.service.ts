@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { LoginUser } from '../models/loginUser';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt'; // Import JwtHelperService
 import { Router } from '@angular/router';
 import { RegisterUser } from '../models/registerUser';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -41,10 +43,14 @@ export class AuthService {
     localStorage.setItem('token', token);
     }
 
-    register(RegisterUser: RegisterUser) {
-      let headers = new HttpHeaders();
-      headers = headers.append("Content-Type", "application/json");
-      return this.httpClient.post(this.path + "register", RegisterUser, { headers: headers });
+    register(RegisterUser: RegisterUser): Observable<any> {
+      let headers = new HttpHeaders().set('Content-Type', 'application/json');
+      return this.httpClient.post(this.path + "register", RegisterUser, { headers: headers }).pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Registration error', error);
+          return throwError(error);
+        })
+      );
     }
     
 

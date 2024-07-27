@@ -33,12 +33,22 @@ export class DashboardComponent implements OnInit {
 
   getTasinmazlar() {
     const userId = this.authService.getCurrentUserId();
-    if (userId) {
+    const role = this.authService.getRole();
+  
+    if (role === 'admin') {
+      this.tasinmazService.getAllTasinmazlar().subscribe((data) => {
+        this.tasinmazlar = data;
+        this.tasinmazlar.forEach(tasinmaz => tasinmaz.selected = false);
+        this.propertyLocations = this.tasinmazlar.map(t => ({ lon: t.koordinatX, lat: t.koordinatY }));
+      });
+    } else if (role === 'user' && userId) {
       this.tasinmazService.getTasinmazlarByUserId(Number(userId)).subscribe((data) => {
         this.tasinmazlar = data;
         this.tasinmazlar.forEach(tasinmaz => tasinmaz.selected = false);
         this.propertyLocations = this.tasinmazlar.map(t => ({ lon: t.koordinatX, lat: t.koordinatY }));
       });
+    } else {
+      console.error('User role is not recognized or user ID is missing');
     }
   }
 

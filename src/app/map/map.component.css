@@ -1,8 +1,10 @@
 /* map.component.css */
 .map {
   position: relative;
-  width: 100%;
+  width: 1300px; /* or whatever width you need */
   height: 600px; /* or whatever height you need */
+  /*center the map*/
+  margin: 0 auto;
 }
 .coordinates {
   margin-top: 10px;

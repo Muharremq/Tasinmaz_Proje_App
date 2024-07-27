@@ -19,6 +19,8 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { AuthService } from './services/auth.service';
 import { TasinmazService } from './services/tasinmaz.service';
 import { AdminGuardService } from './services/admin-guard.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 
 
@@ -44,7 +46,9 @@ import { AdminGuardService } from './services/admin-guard.service';
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    JwtModule
+    JwtModule,
+    BrowserAnimationsModule, // required animations module
+    ToastrModule.forRoot(), // ToastrModule added
     
   ],
   providers: [ TasinmazService, AuthService, AdminGuardService],

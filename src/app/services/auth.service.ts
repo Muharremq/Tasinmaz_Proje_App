@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { RegisterUser } from '../models/registerUser';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { AlertifyService } from './alertify.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ export class AuthService {
 
   constructor( 
     private httpClient: HttpClient,
-    private router: Router) { }
+    private router: Router,
+    private alertifyService: AlertifyService) { }
 
   path = "https://localhost:44348/api/Auth/";
 
@@ -25,25 +27,33 @@ export class AuthService {
   TOKEN_KEY = "token"
   private ROLE_KEY = "role";
 
-  login(LoginUser: LoginUser): Observable<any> {
+  login(LoginUser: LoginUser) {
     let headers = new HttpHeaders();
     headers = headers.append("Content-Type", "application/json");
-    return this.httpClient.post(this.path + "login", LoginUser, { headers: headers })
-      .pipe(
-        map((data: any) => {
-          this.saveToken(data.token);
+    this.httpClient.post(this.path + "login", LoginUser, { headers: headers })
+      .subscribe((data: any) => {
+        if (data && data.token) { // Check if token exists
+          this.saveToken(data.token); 
           const decodedToken = this.jwtHelper.decodeToken(data.token);
           localStorage.setItem(this.ROLE_KEY, decodedToken.role);
-          console.log(decodedToken);
+          console.log(decodedToken); 
           this.router.navigateByUrl("/dashboard");
-          return data;
-        }),
-        catchError(error => {
-          console.error("Login error: ", error);
-          return throwError(error);
-        })
-      );
+          this.alertifyService.success("Logged in successfully");
+        } else {
+          this.alertifyService.warning("Incorrect email or password");
+        }
+      }, error => {
+        if (error.status === 401) {
+          this.alertifyService.warning("Incorrect email or password");
+        } else {
+          this.alertifyService.error("Login failed");
+        }
+        console.error("Login error: ", error);
+      });
   }
+  
+  
+  
 
   saveToken(token: string) {
     localStorage.setItem(this.TOKEN_KEY, token);

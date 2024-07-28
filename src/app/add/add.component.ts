@@ -17,6 +17,9 @@ import VectorLayer from 'ol/layer/Vector';
 import { Style, Fill, Stroke, Circle as CircleStyle } from 'ol/style';
 import { Coordinate } from 'ol/coordinate';
 import { AuthService } from '../services/auth.service';
+import { AlertifyService } from '../services/alertify.service';
+
+
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
@@ -46,7 +49,8 @@ export class AddComponent implements OnInit, OnDestroy {
     private ilceService: IlceService,
     private mahalleService: MahalleService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertifyService: AlertifyService
   ) {}
 
   ngOnInit() {
@@ -135,10 +139,12 @@ export class AddComponent implements OnInit, OnDestroy {
             console.log('Taşınmaz başarıyla eklendi', response);
             this.addTasinmazForm.reset();
             this.tasinmazAdded.emit();
+            this.alertifyService.success('Taşınmaz başarıyla eklendi');
             this.closeModal();
           },
           (error) => {
             console.error('Taşınmaz eklenirken hata oluştu', error);
+            this.alertifyService.error('Taşınmaz eklenirken hata oluştu');
           }
         );
       } else {

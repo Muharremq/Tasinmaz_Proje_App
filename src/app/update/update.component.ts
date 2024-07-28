@@ -15,6 +15,8 @@ import VectorLayer from 'ol/layer/Vector';
 import { Style, Fill, Stroke, Circle as CircleStyle } from 'ol/style';
 import { Coordinate } from 'ol/coordinate';
 import { AuthService } from '../services/auth.service';
+import { AlertifyService } from '../services/alertify.service';
+
 
 @Component({
   selector: 'app-update',
@@ -44,7 +46,8 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
     private ilService: IlService,
     private ilceService: IlceService,
     private mahalleService: MahalleService,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertifyService: AlertifyService
   ) {
     this.updateTasinmazForm = this.fb.group({
       isim: ['', Validators.required],
@@ -160,10 +163,12 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
           response => {
             console.log('Taşınmaz başarıyla güncellendi', response);
             this.tasinmazUpdated.emit(); // Emit the event
+            this.alertifyService.success('Taşınmaz başarıyla güncellendi');
             this.closeUpdateModal();
           },
           error => {
             console.error('Taşınmaz güncellenirken hata oluştu', error);
+            this.alertifyService.error('Taşınmaz güncellenirken hata oluştu');
           }
         );
       } else {

@@ -29,7 +29,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let user of users">
+          <tr *ngFor="let user of users | paginate: { itemsPerPage: 10, currentPage: page }">
             <td>{{user.name}}</td>
             <td>{{user.surname}}</td>
             <td>{{user.email}}</td>
@@ -45,10 +45,11 @@
           </tr>
         </tbody>
       </table>
-            <!--Export Excel Buttonu-->
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" (click)="exportToExcel()">Export to Excel</button>
     </div>
+    <pagination-controls (pageChange)="page = $event"></pagination-controls>
   </div>
+              <!--Export Excel Buttonu-->
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" (click)="exportToExcel()">Export to Excel</button>
 </div>
 <!-- add ve update User Modal  -->
 <app-user-add (userAdded)="onUserAdded()"></app-user-add>

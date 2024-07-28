@@ -1,6 +1,5 @@
 <app-navbar></app-navbar>
 
-
 <div class="container">
   <div class="table-responsive">
     <div class="table-wrapper">
@@ -11,14 +10,15 @@
           </div>
         </div>
       </div>
-      <input type="text" placeholder="Ara" [(ngModel)]="searchTerm">
-      <button (click)="searchLogs()">Ara</button>
+      <div class="mb-3">
+        <input type="text" placeholder="Ara" [(ngModel)]="searchTerm">
+        <button class="btn btn-primary" (click)="searchLogs()">Ara</button>
+      </div>
       <div *ngIf="logs.length > 0; else noData">
         <table class="table table-striped table-hover">
           <thead>
             <tr>
-              <th></th>
-              <th scope="col"></th>
+              <th><input type="checkbox" (change)="selectAll($event)" /> Hepsini Seç</th>
               <th scope="col">Durum</th>
               <th scope="col">Kullanıcı ID</th>
               <th scope="col">İşlem Tipi</th>
@@ -31,13 +31,13 @@
           <tbody>
             <tr *ngFor="let log of logs | paginate: { itemsPerPage: 10, currentPage: page }">
               <td><input type="checkbox" [(ngModel)]="log.selected"></td>
-              <td></td>
               <td>{{ log.durum }}</td>
               <td>{{ log.KullaniciId }}</td>
               <td>{{ log.IslemTip }}</td>
               <td>{{ log.tarihveSaat | date:'HH:mm, dd.MM.yyyy' }}</td>
               <td>{{ log.aciklama }}</td>
               <td>{{ log.kullaniciTip }}</td>
+              <td>{{ log.IP }}</td>
             </tr>
           </tbody>
         </table>
@@ -45,10 +45,11 @@
       <pagination-controls (pageChange)="page = $event"></pagination-controls>
     </div>
     <div class="mb-3">
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" (click)="exportToExcel()">Export to Excel</button>      
+      <button class="btn btn-success" (click)="exportToExcel()">Export to Excel</button>
     </div>
   </div>
 </div>
+
 <ng-template #noData>
   <p>No data available.</p>
 </ng-template>

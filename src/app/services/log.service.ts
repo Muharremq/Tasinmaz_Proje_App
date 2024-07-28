@@ -26,7 +26,6 @@ export class LogService {
     }
 
     searchLogs(term: string): Observable<Log[]> {
-      const headers = this.getAuthHeaders();
       return this.http.get<Log[]>(`${this.apiUrl}/search?term=${term}`);
     }
 }

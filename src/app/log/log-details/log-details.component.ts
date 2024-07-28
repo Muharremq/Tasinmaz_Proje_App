@@ -37,23 +37,31 @@ export class LogDetailsComponent implements OnInit {
   }
 
   searchLogs(): void {
-    if (this.searchTerm.trim() === '') {
-      this.getLogs(); // Fetch all logs if search term is empty
-    } else {
-      this.logService.searchLogs(this.searchTerm).subscribe((data: Log[]) => {
+    this.logService.searchLogs(this.searchTerm).subscribe(
+      (data) => {
         this.logs = data;
-      }, error => {
-        console.log(error);
-      });
-    }
+      },
+      (error) => {
+        console.error('Hata:', error);
+      }
+    );
+  }
+
+  selectAll(event: any): void {
+    this.logs.forEach(log => log.selected = event.target.checked);
   }
 
   // Export Excel Buttonu
-  exportToExcel(): void {
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.logs);
+  exportToExcel() {
+    const selectedLogs = this.logs.filter(log => log.selected);
+    if (selectedLogs.length === 0) {
+      alert('No logs selected for export.');
+      return;
+    }
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(selectedLogs);
     const workbook: XLSX.WorkBook = { Sheets: { 'logs': worksheet }, SheetNames: ['logs'] };
     const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    this.saveAsExcelFile(excelBuffer, 'logs');
+    this.saveAsExcelFile(excelBuffer, 'selected_logs');
   }
 
   private saveAsExcelFile(buffer: any, fileName: string): void {
@@ -61,5 +69,6 @@ export class LogDetailsComponent implements OnInit {
     saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
   }
 }
+
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';

@@ -1,57 +1,56 @@
 <app-navbar></app-navbar>
 <body>
-<!-- User Table -->
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <h1 class="text-center">User Table</h1>
-      <!-- Search Bar -->
-      <form class="d-flex mb-3" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" type="submit">Search</button>
-      </form>
-      <!-- Add Button -->
-      <div class="mb-3">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
-          Yeni Kullanıcı Ekle
-        </button>
+  <!-- User Table -->
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1 class="text-center">User Table</h1>
+        <!-- Search Bar -->
+        <form class="d-flex mb-3" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button type="button" class="btn btn-primary" type="submit">Search</button>
+        </form>
+        <!-- Add Button -->
+        <div class="mb-3">
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+            Yeni Kullanıcı Ekle
+          </button>
+        </div>
+        <!-- User Table -->
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Surname</th>
+              <th>Email</th>
+              <th>Password</th>
+              <th>Phone</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users | paginate: { itemsPerPage: 10, currentPage: page }">
+              <td>{{user.name}}</td>
+              <td>{{user.surname}}</td>
+              <td>{{user.email}}</td>
+              <td>{{user.password}}</td>
+              <td>{{user.phone}}</td>
+              <td>{{user.role}}</td>
+              <td>
+                <button type="button" class="btn btn-primary btn-sm" (click)="openUpdateModal(user.id)">Düzenle</button>
+                <button type="button" class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">Sil</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <!-- User Table -->
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Surname</th>
-            <th>Email</th>
-            <th>Password</th>
-            <th>Phone</th>
-            <th>Role</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let user of users | paginate: { itemsPerPage: 10, currentPage: page }">
-            <td>{{user.name}}</td>
-            <td>{{user.surname}}</td>
-            <td>{{user.email}}</td>
-            <td>{{user.password}}</td>
-            <td>{{user.phone}}</td>
-            <td>{{user.role}}</td>
-            <td>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateTasinmazModal">Düzenle</button>                
-              <button type="button" class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">Sil</button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <pagination-controls (pageChange)="page = $event"></pagination-controls>
     </div>
-    <pagination-controls (pageChange)="page = $event"></pagination-controls>
+    <!-- Export Excel Button -->
+    <button type="button" class="btn btn-primary" (click)="exportToExcel()">Export to Excel</button>
   </div>
-              <!--Export Excel Buttonu-->
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" (click)="exportToExcel()">Export to Excel</button>
-</div>
-<!-- add ve update User Modal  -->
-<app-user-add (userAdded)="onUserAdded()"></app-user-add>
-<app-user-update (userUpdated)="refreshUserList()"></app-user-update>
+  <!-- Add ve Update User Modal -->
+  <app-user-add (userAdded)="onUserAdded()"></app-user-add>
+  <app-user-update #updateUserModal (userUpdated)="refreshUserList()"></app-user-update>
 </body>

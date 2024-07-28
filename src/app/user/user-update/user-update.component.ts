@@ -8,28 +8,28 @@ import * as bootstrap from 'bootstrap';
   templateUrl: './user-update.component.html',
   styleUrls: ['./user-update.component.css']
 })
-export class UserUpdateComponent implements OnInit {
+export class UserUpdateComponent implements OnInit, OnChanges {
   @Input() userId: number;
   @Output() userUpdated = new EventEmitter<void>();
   @ViewChild('updateUserModal') updateUserModal: any;
 
   updateUserForm: FormGroup;
 
-  constructor( 
+  constructor(
     private fb: FormBuilder,
-    private userService: UserService) { 
-      this.updateUserForm = this.fb.group({
-        name: ['', Validators.required],
-        surname: ['', Validators.required],
-        email: ['', [Validators.required, Validators.email]],
-        password: ['', Validators.required],
-        phone: ['', Validators.required],
-        rol: ['', Validators.required],
-     });
+    private userService: UserService
+  ) {
+    this.updateUserForm = this.fb.group({
+      name: ['', Validators.required],
+      surname: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+      phone: ['', Validators.required],
+      role: ['', Validators.required], // Burada `rol` yerine `role` kullanılmalı
+    });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngOnChanges() {
     if (this.userId) {
@@ -40,7 +40,7 @@ export class UserUpdateComponent implements OnInit {
           email: data.email,
           password: data.password,
           phone: data.phone,
-          rol: data.rol,
+          role: data.role, // Burada da `rol` yerine `role` kullanılmalı
         });
       });
     }
@@ -55,9 +55,9 @@ export class UserUpdateComponent implements OnInit {
         email: this.updateUserForm.value.email,
         password: this.updateUserForm.value.password,
         phone: this.updateUserForm.value.phone,
-        rol: this.updateUserForm.value.rol,
+        role: this.updateUserForm.value.role, // `role` doğru şekilde alınıyor
       };
-      
+  
       this.userService.updateUser(this.userId, updatedUser).subscribe(
         response => {
           console.log('Kullanıcı başarıyla güncellendi', response);
@@ -70,9 +70,6 @@ export class UserUpdateComponent implements OnInit {
       );
     } else {
       console.error('Form is invalid');
-      // Form kontrol durumlarını loglayın
-      console.log(this.updateUserForm.controls);
-      // Her kontrolün geçerlilik durumunu loglayın
       Object.keys(this.updateUserForm.controls).forEach(key => {
         const controlErrors: ValidationErrors | null = this.updateUserForm.get(key).errors;
         if (controlErrors != null) {
@@ -83,7 +80,6 @@ export class UserUpdateComponent implements OnInit {
       });
     }
   }
-  
 
   closeUpdateUserModel(): void {
     if (this.updateUserForm) {

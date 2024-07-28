@@ -6,6 +6,6 @@ export class User {
   email: string;
   password: string;
   phone: string;
-  rol: string; 
+  role: string; 
   selected?: boolean;
 }

@@ -72,12 +72,11 @@ export class UserComponent implements OnInit {
   
 
   private closeUpdateModal(): void {
-    const modal = document.getElementById('updateTasinmazModal');
+    const modal = document.getElementById('updateUserModal');
     if (modal) {
       (modal as any).modal('hide');
     }
   }
-
 
   deleteUser(userId: number) {
     if (confirm('Are you sure you want to delete this user?')) {

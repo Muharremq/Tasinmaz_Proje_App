@@ -17,7 +17,6 @@ import { Coordinate } from 'ol/coordinate';
 import { AuthService } from '../services/auth.service';
 import { AlertifyService } from '../services/alertify.service';
 
-
 @Component({
   selector: 'app-update',
   templateUrl: './update.component.html',
@@ -25,20 +24,20 @@ import { AlertifyService } from '../services/alertify.service';
 })
 export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
   @Input() tasinmazId: number;
-  @Output() tasinmazUpdated = new EventEmitter<void>(); // Define EventEmitter
+  @Output() tasinmazUpdated = new EventEmitter<void>();
 
   updateTasinmazForm: FormGroup;
   iller: any[] = [];
   ilceler: any[] = [];
   mahalleler: any[] = [];
-  selectedIl: number; 
+  selectedIl: number;
   selectedIlce: number;
   showMap = false;
   selectedCoordinate: { lon: number, lat: number } | null = null;
   private map: Map | undefined;
   private vectorSource: VectorSource = new VectorSource();
   initialCenter = fromLonLat([35.2433, 38.9637]);
-  initialZoom = 2;
+  initialZoom = 5;
 
   constructor(
     private fb: FormBuilder,
@@ -58,8 +57,7 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
       ada: ['', Validators.required],
       parsel: ['', Validators.required],
       nitelik: ['', Validators.required],
-      koordinatX: ['', Validators.required],
-      koordinatY: ['', Validators.required],
+      koordinat: ['', Validators.required] // Single field for coordinates
     });
   }
 
@@ -70,6 +68,7 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
   ngOnChanges() {
     if (this.tasinmazId) {
       this.tasinmazService.getTasinmazById(this.tasinmazId).subscribe(data => {
+        const koordinat = `${data.koordinatX}, ${data.koordinatY}`;
         this.updateTasinmazForm.patchValue({
           isim: data.name,
           il: data.mahalle.ilce.il.id,
@@ -79,8 +78,7 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
           ada: data.ada,
           parsel: data.parsel,
           nitelik: data.nitelik,
-          koordinatX: data.koordinatX,
-          koordinatY: data.koordinatY,
+          koordinat: koordinat
         });
 
         this.onIlChange(data.mahalle.ilce.il.id, data.mahalle.ilce.id, data.mahalle.id);
@@ -144,25 +142,26 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
   onSubmit() {
     if (this.updateTasinmazForm.valid) {
       const formData = this.updateTasinmazForm.value;
-      const userId = this.authService.getCurrentUserId(); // userId'yi alın
+      const userId = this.authService.getCurrentUserId();
       if (userId) {
+        const [koordinatX, koordinatY] = this.parseCoordinates(formData.koordinat);
         const updatedTasinmaz = {
           id: this.tasinmazId,
           name: formData.isim,
           ada: formData.ada,
           parsel: formData.parsel,
           nitelik: formData.nitelik,
-          koordinatX: formData.koordinatX,
-          koordinatY: formData.koordinatY,
+          koordinatX: koordinatX,
+          koordinatY: koordinatY,
           mahalleId: formData.mahalle,
           adres: formData.adres,
-          userId: userId // userId'yi ekleyin
+          userId: userId
         };
 
         this.tasinmazService.updateTasinmaz(this.tasinmazId, updatedTasinmaz).subscribe(
           response => {
             console.log('Taşınmaz başarıyla güncellendi', response);
-            this.tasinmazUpdated.emit(); // Emit the event
+            this.tasinmazUpdated.emit();
             this.alertifyService.success('Taşınmaz başarıyla güncellendi');
             this.closeUpdateModal();
           },
@@ -177,28 +176,14 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  private closeUpdateModal(): void {
-    const modal = document.getElementById('updateTasinmazModal');
-    if (modal) {
-      (modal as any).modal('hide');
-      this.ngOnDestroy();
-    }
-  }
-
   openMap(): void {
     this.showMap = true;
     setTimeout(() => this.initializeMap(), 0);
   }
 
-  ngOnDestroy(): void {
-    if (this.map) {
-      this.map.setTarget(null);
-      this.map = undefined;
-    }
-  }
   initializeMap(): void {
     if (this.map) {
-      this.map.setTarget(null); // Harita zaten başlatılmışsa hedefi kaldır
+      this.map.setTarget(null);
       this.map = undefined;
     }
 
@@ -223,8 +208,8 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
         }),
       ],
       view: new View({
-        center: fromLonLat([0, 0]), // Başlangıç merkezi
-        zoom: 2 // Başlangıç zoom seviyesi
+        center: this.initialCenter,
+        zoom: this.initialZoom
       })
     });
 
@@ -240,34 +225,33 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
       lat: coords[1],
     };
     this.updateTasinmazForm.patchValue({
-      koordinatX: this.selectedCoordinate.lon,
-      koordinatY: this.selectedCoordinate.lat
+      koordinat: `${this.selectedCoordinate.lon}, ${this.selectedCoordinate.lat}`
     });
 
-    // Yeni işaretçi ekleyin
     const feature = new Feature({
       geometry: new Point(fromLonLat([this.selectedCoordinate.lon, this.selectedCoordinate.lat])),
     });
-    this.vectorSource.clear(); // Önceki işaretçileri temizle
+    this.vectorSource.clear();
     this.vectorSource.addFeature(feature);
 
     this.showMap = false;
   }
 
-  checkForCoordinates() {
-    const koordinatX = localStorage.getItem('koordinatX');
-    const koordinatY = localStorage.getItem('koordinatY');
-    if (koordinatX && koordinatY) {
-      this.updateTasinmazForm.patchValue({ koordinatX, koordinatY });
-      localStorage.removeItem('koordinatX');
-      localStorage.removeItem('koordinatY');
+  ngOnDestroy(): void {
+    if (this.map) {
+      this.map.setTarget(null);
     }
   }
 
-  onMapClick(event: { lon: number; lat: number }) {
-    this.updateTasinmazForm.patchValue({
-      koordinatX: event.lon,
-      koordinatY: event.lat
-    });
+  private parseCoordinates(coordinate: string): [number, number] {
+    const [lon, lat] = coordinate.split(',').map(Number);
+    return [lon, lat];
+  }
+
+  closeUpdateModal() {
+    const modalCloseButton = document.getElementById('updateModalCloseButton');
+    if (modalCloseButton) {
+      modalCloseButton.click();
+    }
   }
 }

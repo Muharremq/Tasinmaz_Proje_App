@@ -19,9 +19,10 @@ export class UserService {
       return new HttpHeaders().set('Authorization', `Bearer ${this.authService.getToken()}`);
     }
 
-getUserById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/${id}`);
-  }
+    getUserById(id: number): Observable<User> {
+      const headers = this.getAuthHeaders();
+      return this.http.get<User>(`${this.apiUrl}/${id}`, { headers });
+    }
 
   addUser(user: User): Observable<User> {
     const headers = new HttpHeaders({
@@ -31,16 +32,20 @@ getUserById(id: number): Observable<User> {
   }
   
   deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    const headers = this.getAuthHeaders();
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers });
   }
-
   updateUser(id: number, user: any): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.authService.getToken()}` // Yetkilendirme başlığı eklendi
+    });
     return this.http.put<User>(`${this.apiUrl}/${id}`, user, { headers });
   }
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl);
+    const headers = this.getAuthHeaders();
+    return this.http.get<User[]>(this.apiUrl, { headers });
   }
 
   getAllUsers(): Observable<User[]> {

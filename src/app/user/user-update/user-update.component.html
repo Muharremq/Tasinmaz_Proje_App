@@ -45,10 +45,12 @@
             </div>
             <div class="mb-3">
               <label for="role" class="form-label">Rol</label>
-              <input type="text" id="role" formControlName="rol" class="form-control">
-              <div *ngIf="updateUserForm.controls.rol.invalid && (updateUserForm.controls.rol.dirty || updateUserForm.controls.rol.touched)" class="text-danger">
-                Rol zorunludur.
-              </div>
+              <select id="role" formControlName="rol" class="form-select">
+                <option value="">Seçiniz...</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+              </select>
+              <div class="invalid-feedback">Rol alanı boş bırakılamaz</div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vazgeç</button>

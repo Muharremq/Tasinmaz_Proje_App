@@ -39,7 +39,7 @@ export class AddComponent implements OnInit, OnDestroy {
   private map: Map | undefined;
   private vectorSource: VectorSource = new VectorSource();
   initialCenter = fromLonLat([35.2433, 38.9637]);
-  initialZoom = 2;
+  initialZoom = 5;
 
   constructor(
     private fb: FormBuilder,
@@ -212,8 +212,8 @@ export class AddComponent implements OnInit, OnDestroy {
         }),
       ],
       view: new View({
-        center: fromLonLat([0, 0]), // Başlangıç merkezi
-        zoom: 2 // Başlangıç zoom seviyesi
+        center: this.initialCenter,
+        zoom: this.initialZoom // Başlangıç zoom seviyesi
       })
     });
   

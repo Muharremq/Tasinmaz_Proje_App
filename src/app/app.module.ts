@@ -20,7 +20,11 @@ import { AuthService } from './services/auth.service';
 import { TasinmazService } from './services/tasinmaz.service';
 import { AdminGuardService } from './services/admin-guard.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ToastrModule } from 'ngx-toastr';
+import { AlertifyService } from './services/alertify.service';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { LogDetailsComponent } from './log/log-details/log-details.component';
+import { CommonModule } from '@angular/common';
+
 
 
 
@@ -38,6 +42,7 @@ import { ToastrModule } from 'ngx-toastr';
     UserComponent,
     UserAddComponent,
     UserUpdateComponent,
+    LogDetailsComponent,
     
   ],
   imports: [
@@ -47,11 +52,13 @@ import { ToastrModule } from 'ngx-toastr';
     ReactiveFormsModule,
     FormsModule,
     JwtModule,
-    BrowserAnimationsModule, // required animations module
-    ToastrModule.forRoot(), // ToastrModule added
+    BrowserAnimationsModule, 
+    NgxPaginationModule,
+    CommonModule
     
+
   ],
-  providers: [ TasinmazService, AuthService, AdminGuardService],
+  providers: [ TasinmazService, AuthService, AdminGuardService, AlertifyService],
   bootstrap: [AppComponent],
   entryComponents: [UserAddComponent, UserUpdateComponent, UpdateComponent, AddComponent]
 })

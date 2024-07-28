@@ -10,54 +10,71 @@
           <form [formGroup]="addTasinmazForm" (ngSubmit)="onSubmit()">
             <div class="mb-3">
               <label for="isim" class="form-label">İsim</label>
-              <input type="text" id="isim" formControlName="isim" class="form-control">
+              <input type="text" id="isim" formControlName="isim" class="form-control"
+              [ngClass]="{'is-invalid': addTasinmazForm.get('isim').invalid && addTasinmazForm.get('isim').touched, 'is-valid': addTasinmazForm.get('isim').valid && addTasinmazForm.get('isim').touched}">
+              <div class="invalid-feedback">İsim alanı boş bırakılamaz</div>
             </div>
             <div class="mb-3">
               <label for="il" class="form-label">İl</label>
-              <select id="il" formControlName="il" class="form-select" (change)="onIlChange($event.target.value)">
+              <select id="il" formControlName="il" class="form-select" (change)="onIlChange($event.target.value)"
+                [ngClass]="{'is-invalid' : addTasinmazForm.get('il').invalid && addTasinmazForm.get('il').touched, 'is-valid' : addTasinmazForm.get('il').valid && addTasinmazForm.get('il').touched}">
+                <option value="">Seçiniz...</option>
                 <option *ngFor="let il of iller" [value]="il.id">{{ il.name }}</option>
               </select>
+              <div class="invalid-feedback">İl alanı boş bırakılamaz</div>
             </div>
             <div class="mb-3">
               <label for="ilce" class="form-label">İlçe</label>
-              <select id="ilce" formControlName="ilce" class="form-select" (change)="onIlceChange($event.target.value)">
+              <select id="ilce" formControlName="ilce" class="form-select" (change)="onIlceChange($event.target.value)"
+                [ngClass]="{'is-invalid' : addTasinmazForm.get('ilce').invalid && addTasinmazForm.get('ilce').touched, 'is-valid' : addTasinmazForm.get('ilce').valid && addTasinmazForm.get('ilce').touched}">
+                <option value="">Seçiniz...</option>
                 <option *ngFor="let ilce of ilceler" [value]="ilce.id">{{ ilce.name }}</option>
               </select>
+              <div class="invalid-feedback">İlçe alanı boş bırakılamaz</div>
             </div>
             <div class="mb-3">
               <label for="mahalle" class="form-label">Mahalle</label>
-              <select id="mahalle" formControlName="mahalle" class="form-select">
+              <select id="mahalle" formControlName="mahalle" class="form-select" 
+                [ngClass]="{'is-invalid' : addTasinmazForm.get('mahalle').invalid && addTasinmazForm.get('mahalle').touched, 'is-valid' : addTasinmazForm.get('mahalle').valid && addTasinmazForm.get('mahalle').touched}">
+                <option value="">Seçiniz...</option>
                 <option *ngFor="let mahalle of mahalleler" [value]="mahalle.id">{{ mahalle.name }}</option>
               </select>
+              <div class="invalid-feedback">Mahalle alanı boş bırakılamaz</div>
             </div>
             <div class="mb-3">
               <label for="adres" class="form-label">Adres</label>
-              <input type="text" id="adres" formControlName="adres" class="form-control">
+              <input type="text" id="adres" formControlName="adres" class="form-control"
+              [ngClass]="{'is-invalid': addTasinmazForm.get('adres').invalid && addTasinmazForm.get('adres').touched, 'is-valid' : addTasinmazForm.get('adres').valid && addTasinmazForm.get('adres').touched}">
+              <div class="invalid-feedback">Adres alanı boş bırakılamaz</div>
             </div>
             <div class="mb-3">
               <label for="ada" class="form-label">Ada</label>
-              <input type="text" id="ada" formControlName="ada" class="form-control">
+              <input type="text" id="ada" formControlName="ada" class="form-control"
+              [ngClass]="{'is-invalid': addTasinmazForm.get('ada').invalid && addTasinmazForm.get('ada').touched, 'is-valid' : addTasinmazForm.get('ada').valid && addTasinmazForm.get('ada').touched}">
+              <div class="invalid-feedback">Ada alanı boş bırakılamaz</div>
             </div>
             <div class="mb-3">
               <label for="parsel" class="form-label">Parsel</label>
-              <input type="text" id="parsel" formControlName="parsel" class="form-control">
+              <input type="text" id="parsel" formControlName="parsel" class="form-control"
+              [ngClass]="{'is-invalid': addTasinmazForm.get('parsel').invalid && addTasinmazForm.get('parsel').touched, 'is-valid' : addTasinmazForm.get('parsel').valid && addTasinmazForm.get('parsel').touched}">
+              <div class="invalid-feedback">Parsel alanı boş bırakılamaz</div>
             </div>
             <div class="mb-3">
               <label for="nitelik" class="form-label">Nitelik</label>
-              <input type="text" id="nitelik" formControlName="nitelik" class="form-control">
+              <input type="text" id="nitelik" formControlName="nitelik" class="form-control"
+              [ngClass]="{'is-invalid': addTasinmazForm.get('nitelik').invalid && addTasinmazForm.get('nitelik').touched, 'is-valid' : addTasinmazForm.get('nitelik').valid && addTasinmazForm.get('nitelik').touched}">
+              <div class="invalid-feedback">Nitelik alanı boş bırakılamaz</div>
             </div>
             <div class="mb-3">
-              <label for="koordinatX" class="form-label">Koordinat Bilgileri X</label>
-              <input type="text" id="koordinatX" formControlName="koordinatX" class="form-control">
-            </div>
-            <div class="mb-3">
-              <label for="koordinatY" class="form-label">Koordinat Bilgileri Y</label>
-              <input type="text" id="koordinatY" formControlName="koordinatY" class="form-control">
+              <label for="koordinat" class="form-label">Koordinat Bilgileri</label>
+              <input type="text" id="koordinat" formControlName="koordinat" class="form-control"
+              [ngClass]="{'is-invalid': addTasinmazForm.get('koordinat').invalid && addTasinmazForm.get('koordinat').touched, 'is-valid': addTasinmazForm.get('koordinat').valid && addTasinmazForm.get('koordinat').touched}">
+              <div class="invalid-feedback">Koordinat bilgileri boş bırakılamaz</div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeModal()">Close</button>
               <button type="button" class="btn btn-primary" (click)="openMap()">Koordinat Seç</button>
-              <button type="button" class="btn btn-primary" (click)="onSubmit()">Save changes</button>
+              <button type="submit" class="btn btn-primary">Kaydet</button>
             </div>
           </form>
         </div>

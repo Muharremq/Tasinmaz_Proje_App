@@ -32,10 +32,28 @@ export class UserAddComponent implements OnInit {
       name: ['', Validators.required],
       surname: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, this.passwordValidator]],
       phone: ['', Validators.required],
       role: ['', Validators.required],
     });
+  }
+
+  passwordValidator(control) {
+    const password = control.value;
+    if (!password) {
+      return null;
+    }
+    const haslength = password.length >= 8;
+    const hasNumber = /[0-9]/.test(password);
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    const valid = hasNumber && hasUpper && hasLower && hasSpecial && haslength;
+    if (!valid) {
+      return { passwordInvalid: true };
+    }
+    return null;
   }
 
   register() {

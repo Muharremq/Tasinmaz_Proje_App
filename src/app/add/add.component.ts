@@ -4,7 +4,7 @@ import { IlService } from '../services/il.service';
 import { IlceService } from '../services/ilce.service';
 import { MahalleService } from '../services/mahalle.service';
 import { TasinmazService } from '../services/tasinmaz.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Tasinmaz } from '../models/tasinmaz';
 import { Map, View } from 'ol';
 import Tile from 'ol/layer/Tile';
@@ -18,7 +18,6 @@ import { Style, Fill, Stroke, Circle as CircleStyle } from 'ol/style';
 import { Coordinate } from 'ol/coordinate';
 import { AuthService } from '../services/auth.service';
 import { AlertifyService } from '../services/alertify.service';
-
 
 @Component({
   selector: 'app-add',
@@ -65,8 +64,7 @@ export class AddComponent implements OnInit, OnDestroy {
       ada: ['', Validators.required],
       parsel: ['', Validators.required],
       nitelik: ['', Validators.required],
-      koordinatX: ['', Validators.required],
-      koordinatY: ['', Validators.required]
+      koordinat: ['', Validators.required]
     });
     this.checkForCoordinates();
   }
@@ -120,14 +118,15 @@ export class AddComponent implements OnInit, OnDestroy {
       const formData = this.addTasinmazForm.value;
       const userId = this.authService.getCurrentUserId();
       if (userId) {
+        const [koordinatX, koordinatY] = this.parseCoordinates(formData.koordinat);
         const tasinmaz: Tasinmaz = {
           id: 0,
           name: formData.isim,
           ada: formData.ada,
           parsel: formData.parsel,
           nitelik: formData.nitelik,
-          koordinatX: formData.koordinatX,
-          koordinatY: formData.koordinatY,
+          koordinatX: koordinatX,
+          koordinatY: koordinatY,
           mahalleId: formData.mahalle,
           adres: formData.adres,
           userId: Number(userId),
@@ -152,6 +151,7 @@ export class AddComponent implements OnInit, OnDestroy {
       }
     }
   }
+
   resetForm(): void {
     this.addTasinmazForm.reset();
     this.selectedIl = null;
@@ -162,8 +162,7 @@ export class AddComponent implements OnInit, OnDestroy {
     this.vectorSource.clear();
     this.addTasinmazForm.patchValue({
       isim: null,
-      koordinatX: '',
-      koordinatY: ''
+      koordinat: ''
     });
 
   }
@@ -230,8 +229,7 @@ export class AddComponent implements OnInit, OnDestroy {
       lat: coords[1],
     };
     this.addTasinmazForm.patchValue({
-      koordinatX: this.selectedCoordinate.lon,
-      koordinatY: this.selectedCoordinate.lat
+      koordinat: `${this.selectedCoordinate.lon}, ${this.selectedCoordinate.lat}`
     });
 
     // Yeni işaretçi ekleyin
@@ -245,12 +243,10 @@ export class AddComponent implements OnInit, OnDestroy {
   }
 
   checkForCoordinates() {
-    const koordinatX = localStorage.getItem('koordinatX');
-    const koordinatY = localStorage.getItem('koordinatY');
-    if (koordinatX && koordinatY) {
-      this.addTasinmazForm.patchValue({ koordinatX, koordinatY });
-      localStorage.removeItem('koordinatX');
-      localStorage.removeItem('koordinatY');
+    const koordinat = localStorage.getItem('koordinat');
+    if (koordinat) {
+      this.addTasinmazForm.patchValue({ koordinat });
+      localStorage.removeItem('koordinat');
     }
   }
 
@@ -264,8 +260,12 @@ export class AddComponent implements OnInit, OnDestroy {
 
   onMapClick(event: { lon: number; lat: number }) {
     this.addTasinmazForm.patchValue({
-      koordinatX: event.lon,
-      koordinatY: event.lat
+      koordinat: `${event.lon}, ${event.lat}`
     });
+  }
+
+  private parseCoordinates(coordinateString: string): [number, number] {
+    const coords = coordinateString.split(',').map(coord => parseFloat(coord.trim()));
+    return [coords[0], coords[1]];
   }
 }

@@ -8,6 +8,7 @@ import { AddComponent } from './add/add.component';
 import { LoginGuardService } from './services/login-guard.service';
 import { MapComponent } from './map/map.component';
 import { AdminGuardService } from './services/admin-guard.service';
+import { LogDetailsComponent } from './log/log-details/log-details.component';
 
 
 const routes: Routes = [
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'map', component: MapComponent, data: { title: 'Anasayfa'}, canActivate: [LoginGuardService] },
   { path: 'log', component: LogComponent, data: { title: 'Log İşlemleri'}, canActivate: [LoginGuardService, AdminGuardService] },
   { path: '', redirectTo: '/login', pathMatch: 'full' }, // Varsayılan rota, opsiyonel
+  { path: 'log/log-details', component: LogDetailsComponent, data: { title: 'Log Detayları'}, canActivate: [LoginGuardService, AdminGuardService] },
   { path: '**', redirectTo: '/dashboard', pathMatch: 'full' }
 ];
 

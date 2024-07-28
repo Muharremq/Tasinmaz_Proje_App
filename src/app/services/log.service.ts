@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
+import { Observable } from 'rxjs';
+import { Log } from '../models/log';
 
 
 @Injectable({
@@ -21,5 +23,10 @@ export class LogService {
     getAllLogs() {
       const headers = this.getAuthHeaders();
       return this.http.get(this.apiUrl, { headers });
+    }
+
+    searchLogs(term: string): Observable<Log[]> {
+      const headers = this.getAuthHeaders();
+      return this.http.get<Log[]>(`${this.apiUrl}/search?term=${term}`);
     }
 }

@@ -112,6 +112,9 @@ export class DashboardComponent implements OnInit {
     this.selectedCoordinates = coordinates;
   }
 
+  get isAuthenticated(){
+    return this.authService.loggedIn();
+  }
   exportToExcel(): void {
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.tasinmazlar);
     const workbook: XLSX.WorkBook = { Sheets: { 'tasinmazlar': worksheet }, SheetNames: ['tasinmazlar'] };
@@ -124,10 +127,6 @@ export class DashboardComponent implements OnInit {
     saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
   }
 
-  get isAuthenticated(){
-    return this.authService.loggedIn();
-  }
 }
-
 const EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 const EXCEL_EXTENSION = '.xlsx';

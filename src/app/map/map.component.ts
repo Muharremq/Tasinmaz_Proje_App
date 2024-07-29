@@ -1,26 +1,35 @@
-import { Component, AfterViewInit, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { Map, View } from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
-import { fromLonLat, toLonLat } from 'ol/proj';
-import { Feature } from 'ol';
-import { Point } from 'ol/geom';
-import VectorSource from 'ol/source/Vector';
-import VectorLayer from 'ol/layer/Vector';
-import { Style, Fill, Stroke, Circle as CircleStyle } from 'ol/style';
-import ScaleLine from 'ol/control/ScaleLine';
-import XYZ from 'ol/source/XYZ';
-import { defaults as defaultControls } from 'ol/control';
+import {
+  Component,
+  AfterViewInit,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+  ElementRef,
+} from "@angular/core";
+import { Map, View } from "ol";
+import OSM from "ol/source/OSM";
+import { fromLonLat, toLonLat } from "ol/proj";
+import { Point } from "ol/geom";
+import { Style, Fill, Stroke, Circle as CircleStyle } from "ol/style";
+import ScaleLine from "ol/control/ScaleLine";
+import XYZ from "ol/source/XYZ";
+import { defaults as defaultControls } from "ol/control";
+import OlMousePosition from "ol/control/MousePosition";
+import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
+import { Vector as VectorSource } from "ol/source";
+import { Feature } from "ol";
 
 @Component({
-  selector: 'app-map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.css']
+  selector: "app-map",
+  templateUrl: "./map.component.html",
+  styleUrls: ["./map.component.css"],
 })
 export class MapComponent implements AfterViewInit, OnChanges {
-  @Input() mapId: string = 'map-container';
-  @Input() coordinates: { lon: number, lat: number };
-  @Input() propertyLocations: { lon: number, lat: number }[] = [];
+  @Input() mapId: string = "map-container";
+  @Input() coordinates: { lon: number; lat: number };
+  @Input() propertyLocations: { lon: number; lat: number }[] = [];
+  @ViewChild("mousePosition") mousePosition: ElementRef;
 
   private map: Map;
   private vectorSource: VectorSource = new VectorSource();
@@ -31,10 +40,10 @@ export class MapComponent implements AfterViewInit, OnChanges {
     source: new OSM(),
     visible: true,
   });
-  
+
   private googleLayer = new TileLayer({
     source: new XYZ({
-      url: 'http://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}',
+      url: "http://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}",
     }),
     visible: false,
   });
@@ -64,9 +73,9 @@ export class MapComponent implements AfterViewInit, OnChanges {
           style: new Style({
             image: new CircleStyle({
               radius: 7,
-              fill: new Fill({ color: 'red' }),
+              fill: new Fill({ color: "red" }),
               stroke: new Stroke({
-                color: 'black',
+                color: "black",
                 width: 2,
               }),
             }),
@@ -79,17 +88,37 @@ export class MapComponent implements AfterViewInit, OnChanges {
       }),
       controls: defaultControls().extend([
         new ScaleLine({
-          units: 'metric', // or 'imperial'
+          units: "metric", // or 'imperial'
           minWidth: 100,
-          target: document.getElementById('scale-line'), // Ensure this targets the correct element
+          target: document.getElementById("scale-line"), // Ensure this targets the correct element
         }),
       ]),
     });
 
-    this.map.on('click', (event) => {
-      const coordinates = toLonLat(event.coordinate);
-      this.addMarker(coordinates);
+    const mousePositionControl = new OlMousePosition({
+      coordinateFormat: (coord) => {
+        // Projeksiyondan coğrafi koordinatlara dönüştürme
+        return `X: ${coord[0].toFixed(2)}, Y: ${coord[1].toFixed(2)}`;
+      },
+      projection: "EPSG:3857", // OpenLayers'in varsayılan projeksiyonu
+      className: "ol-mouse-position",
+      target: document.getElementById("mouse-position"),
     });
+
+    this.map.addControl(mousePositionControl);
+
+    this.map.on("pointermove", (evt) => {
+      const coordinates = evt.coordinate;
+      this.updateMousePosition(coordinates[0], coordinates[1]);
+    });
+  }
+
+  updateMousePosition(x: number, y: number): void {
+    if (this.mousePosition) {
+      this.mousePosition.nativeElement.innerText = `XS: ${x.toFixed(
+        2
+      )}, Y: ${y.toFixed(2)}`;
+    }
   }
 
   addMarker(coordinates: [number, number]): void {
@@ -101,7 +130,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
     //get coordinates
     const lon = coordinates[0].toFixed(6);
     const lat = coordinates[1].toFixed(6);
-    const coordElement = document.getElementById('coordinates');
+    const coordElement = document.getElementById("coordinates");
     if (coordElement) {
       coordElement.innerHTML = `Koordinatlar: Enlem: ${lat}, Boylam: ${lon}`;
     }
@@ -119,7 +148,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
   }
 
   toggleLayer(layer: string): void {
-    if (layer === 'osm') {
+    if (layer === "osm") {
       this.osmLayer.setVisible(true);
       this.googleLayer.setVisible(false);
     } else {
@@ -134,7 +163,7 @@ export class MapComponent implements AfterViewInit, OnChanges {
     this.googleLayer.setOpacity(Number(value));
   }
 
-  addPropertyMarkers(locations: { lon: number, lat: number }[]): void {
+  addPropertyMarkers(locations: { lon: number; lat: number }[]): void {
     this.vectorSource.clear();
     locations.forEach(({ lon, lat }) => {
       const marker = new Feature({

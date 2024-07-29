@@ -23,6 +23,7 @@
     "@popperjs/core": "^2.11.8",
     "alertifyjs": "^1.14.0",
     "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
     "core-js": "^2.5.4",
     "file-saver": "^2.0.5",
     "jquery": "^3.7.1",

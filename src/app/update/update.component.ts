@@ -1,26 +1,34 @@
-import { Component, Input, OnChanges, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TasinmazService } from '../services/tasinmaz.service';
-import { IlService } from '../services/il.service';
-import { IlceService } from '../services/ilce.service';
-import { MahalleService } from '../services/mahalle.service';
-import { Map, View } from 'ol';
-import Tile from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
-import { fromLonLat, toLonLat } from 'ol/proj';
-import { Feature } from 'ol';
-import { Point } from 'ol/geom';
-import VectorSource from 'ol/source/Vector';
-import VectorLayer from 'ol/layer/Vector';
-import { Style, Fill, Stroke, Circle as CircleStyle } from 'ol/style';
-import { Coordinate } from 'ol/coordinate';
-import { AuthService } from '../services/auth.service';
-import { AlertifyService } from '../services/alertify.service';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  EventEmitter,
+  OnDestroy,
+} from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { TasinmazService } from "../services/tasinmaz.service";
+import { IlService } from "../services/il.service";
+import { IlceService } from "../services/ilce.service";
+import { MahalleService } from "../services/mahalle.service";
+import { Map, View } from "ol";
+import Tile from "ol/layer/Tile";
+import OSM from "ol/source/OSM";
+import { fromLonLat, toLonLat } from "ol/proj";
+import { Feature } from "ol";
+import { Point } from "ol/geom";
+import VectorSource from "ol/source/Vector";
+import VectorLayer from "ol/layer/Vector";
+import { Style, Fill, Stroke, Circle as CircleStyle } from "ol/style";
+import { Coordinate } from "ol/coordinate";
+import { AuthService } from "../services/auth.service";
+import { AlertifyService } from "../services/alertify.service";
 
 @Component({
-  selector: 'app-update',
-  templateUrl: './update.component.html',
-  styleUrls: ['./update.component.css']
+  selector: "app-update",
+  templateUrl: "./update.component.html",
+  styleUrls: ["./update.component.css"],
 })
 export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
   @Input() tasinmazId: number;
@@ -33,7 +41,7 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
   selectedIl: number;
   selectedIlce: number;
   showMap = false;
-  selectedCoordinate: { lon: number, lat: number } | null = null;
+  selectedCoordinate: { lon: number; lat: number } | null = null;
   private map: Map | undefined;
   private vectorSource: VectorSource = new VectorSource();
   initialCenter = fromLonLat([35.2433, 38.9637]);
@@ -49,15 +57,15 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
     private alertifyService: AlertifyService
   ) {
     this.updateTasinmazForm = this.fb.group({
-      isim: ['', Validators.required],
-      il: ['', Validators.required],
-      ilce: ['', Validators.required],
-      mahalle: ['', Validators.required],
-      adres: ['', Validators.required],
-      ada: ['', Validators.required],
-      parsel: ['', Validators.required],
-      nitelik: ['', Validators.required],
-      koordinat: ['', Validators.required] // Single field for coordinates
+      isim: ["", Validators.required],
+      il: ["", Validators.required],
+      ilce: ["", Validators.required],
+      mahalle: ["", Validators.required],
+      adres: ["", Validators.required],
+      ada: ["", Validators.required],
+      parsel: ["", Validators.required],
+      nitelik: ["", Validators.required],
+      koordinat: ["", Validators.required], // Single field for coordinates
     });
   }
 
@@ -67,22 +75,28 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnChanges() {
     if (this.tasinmazId) {
-      this.tasinmazService.getTasinmazById(this.tasinmazId).subscribe(data => {
-        const koordinat = `${data.koordinatX}, ${data.koordinatY}`;
-        this.updateTasinmazForm.patchValue({
-          isim: data.name,
-          il: data.mahalle.ilce.il.id,
-          ilce: data.mahalle.ilce.id,
-          mahalle: data.mahalle.id,
-          adres: data.adres,
-          ada: data.ada,
-          parsel: data.parsel,
-          nitelik: data.nitelik,
-          koordinat: koordinat
-        });
+      this.tasinmazService
+        .getTasinmazById(this.tasinmazId)
+        .subscribe((data) => {
+          const koordinat = `${data.koordinatX}, ${data.koordinatY}`;
+          this.updateTasinmazForm.patchValue({
+            isim: data.name,
+            il: data.mahalle.ilce.il.id,
+            ilce: data.mahalle.ilce.id,
+            mahalle: data.mahalle.id,
+            adres: data.adres,
+            ada: data.ada,
+            parsel: data.parsel,
+            nitelik: data.nitelik,
+            koordinat: koordinat,
+          });
 
-        this.onIlChange(data.mahalle.ilce.il.id, data.mahalle.ilce.id, data.mahalle.id);
-      });
+          this.onIlChange(
+            data.mahalle.ilce.il.id,
+            data.mahalle.ilce.id,
+            data.mahalle.id
+          );
+        });
     }
   }
 
@@ -93,7 +107,7 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
         this.iller.sort((a, b) => a.name.localeCompare(b.name));
       },
       (error) => {
-        console.error('İller yüklenirken hata oluştu', error);
+        console.error("İller yüklenirken hata oluştu", error);
       }
     );
   }
@@ -120,7 +134,7 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
         }
       },
       (error) => {
-        console.error('İlçeler yüklenirken hata oluştu', error);
+        console.error("İlçeler yüklenirken hata oluştu", error);
       }
     );
   }
@@ -134,7 +148,7 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
         }
       },
       (error) => {
-        console.error('Mahalleler yüklenirken hata oluştu', error);
+        console.error("Mahalleler yüklenirken hata oluştu", error);
       }
     );
   }
@@ -144,7 +158,9 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
       const formData = this.updateTasinmazForm.value;
       const userId = this.authService.getCurrentUserId();
       if (userId) {
-        const [koordinatX, koordinatY] = this.parseCoordinates(formData.koordinat);
+        const [koordinatX, koordinatY] = this.parseCoordinates(
+          formData.koordinat
+        );
         const updatedTasinmaz = {
           id: this.tasinmazId,
           name: formData.isim,
@@ -155,23 +171,25 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
           koordinatY: koordinatY,
           mahalleId: formData.mahalle,
           adres: formData.adres,
-          userId: userId
+          userId: userId,
         };
 
-        this.tasinmazService.updateTasinmaz(this.tasinmazId, updatedTasinmaz).subscribe(
-          response => {
-            console.log('Taşınmaz başarıyla güncellendi', response);
-            this.tasinmazUpdated.emit();
-            this.alertifyService.success('Taşınmaz başarıyla güncellendi');
-            this.closeUpdateModal();
-          },
-          error => {
-            console.error('Taşınmaz güncellenirken hata oluştu', error);
-            this.alertifyService.error('Taşınmaz güncellenirken hata oluştu');
-          }
-        );
+        this.tasinmazService
+          .updateTasinmaz(this.tasinmazId, updatedTasinmaz)
+          .subscribe(
+            (response) => {
+              console.log("Taşınmaz başarıyla güncellendi", response);
+              this.tasinmazUpdated.emit();
+              this.alertifyService.success("Taşınmaz başarıyla güncellendi");
+              this.closeUpdateModal();
+            },
+            (error) => {
+              console.error("Taşınmaz güncellenirken hata oluştu", error);
+              this.alertifyService.error("Taşınmaz güncellenirken hata oluştu");
+            }
+          );
       } else {
-        console.error('User ID bulunamadı');
+        console.error("User ID bulunamadı");
       }
     }
   }
@@ -188,19 +206,19 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
     }
 
     this.map = new Map({
-      target: 'map-container',
+      target: "map-container",
       layers: [
         new Tile({
-          source: new OSM()
+          source: new OSM(),
         }),
         new VectorLayer({
           source: this.vectorSource,
           style: new Style({
             image: new CircleStyle({
               radius: 7,
-              fill: new Fill({ color: 'red' }),
+              fill: new Fill({ color: "red" }),
               stroke: new Stroke({
-                color: 'black',
+                color: "black",
                 width: 2,
               }),
             }),
@@ -209,11 +227,11 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
       ],
       view: new View({
         center: this.initialCenter,
-        zoom: this.initialZoom
-      })
+        zoom: this.initialZoom,
+      }),
     });
 
-    this.map.on('click', (event) => {
+    this.map.on("click", (event) => {
       const coords = toLonLat(event.coordinate);
       this.onCoordinateSelected(coords);
     });
@@ -225,11 +243,13 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
       lat: coords[1],
     };
     this.updateTasinmazForm.patchValue({
-      koordinat: `${this.selectedCoordinate.lon}, ${this.selectedCoordinate.lat}`
+      koordinat: `${this.selectedCoordinate.lon}, ${this.selectedCoordinate.lat}`,
     });
 
     const feature = new Feature({
-      geometry: new Point(fromLonLat([this.selectedCoordinate.lon, this.selectedCoordinate.lat])),
+      geometry: new Point(
+        fromLonLat([this.selectedCoordinate.lon, this.selectedCoordinate.lat])
+      ),
     });
     this.vectorSource.clear();
     this.vectorSource.addFeature(feature);
@@ -244,12 +264,12 @@ export class UpdateComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   private parseCoordinates(coordinate: string): [number, number] {
-    const [lon, lat] = coordinate.split(',').map(Number);
+    const [lon, lat] = coordinate.split(",").map(Number);
     return [lon, lat];
   }
 
   closeUpdateModal() {
-    const modalCloseButton = document.getElementById('updateModalCloseButton');
+    const modalCloseButton = document.getElementById("updateModalCloseButton");
     if (modalCloseButton) {
       modalCloseButton.click();
     }

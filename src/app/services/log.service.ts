@@ -1,31 +1,33 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { AuthService } from './auth.service';
-import { Observable } from 'rxjs';
-import { Log } from '../models/log';
-
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { AuthService } from "./auth.service";
+import { Observable } from "rxjs";
+import { Log } from "../models/log";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class LogService {
+  private apiUrl = "https://localhost:44348/api/Log"; // API URL
 
-  private apiUrl = 'https://localhost:44348/api/Log'; // API URL
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService  ) { }
+  private getAuthHeaders(): HttpHeaders {
+    return new HttpHeaders().set(
+      "Authorization",
+      `Bearer ${this.authService.getToken()}`
+    );
+  }
 
-    private getAuthHeaders(): HttpHeaders {
-      return new HttpHeaders().set('Authorization', `Bearer ${this.authService.getToken()}`);
-    }
+  getAllLogs() {
+    const headers = this.getAuthHeaders();
+    return this.http.get(this.apiUrl, { headers });
+  }
 
-    getAllLogs() {
-      const headers = this.getAuthHeaders();
-      return this.http.get(this.apiUrl, { headers });
-    }
-
-    searchLogs(term: string): Observable<Log[]> {
-      return this.http.get<Log[]>(`${this.apiUrl}/search?term=${term}`);
-    }
+  searchLogs(term: string): Observable<Log[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<Log[]>(`${this.apiUrl}/search?term=${term}`, {
+      headers,
+    });
+  }
 }

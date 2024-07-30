@@ -1,10 +1,10 @@
 export class Log {
-    logId : number;
-    KullaniciId : number;
-    Durum : string;
-    IslemTip : string;
-    Aciklama : string;
-    TarihveSaati : Date;
-    KullaniciTipi : string;
-    selected: boolean;
+  logId: number;
+  kullaniciId: number;
+  Durum: string;
+  islemTip: string;
+  Aciklama: string;
+  TarihveSaati: Date;
+  KullaniciTip: string;
+  selected: boolean;
 }

@@ -30,8 +30,8 @@
           <tr *ngFor="let log of logs | paginate: { itemsPerPage: 10, currentPage: page }">
             <td></td>
             <td>{{ log.durum }}</td>
-            <td>{{ log.KullaniciId }}</td>
-            <td>{{ log.IslemTip }}</td>
+            <td>{{ log.kullaniciId }}</td>
+            <td>{{ log.islemTip }}</td>
             <td>{{ log.tarihveSaat | date:'HH:mm, dd.MM.yyyy' }}</td>
             <td>{{ log.aciklama }}</td>
             <td>{{ log.kullaniciTip }}</td>

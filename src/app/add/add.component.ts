@@ -1,32 +1,40 @@
-import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IlService } from '../services/il.service';
-import { IlceService } from '../services/ilce.service';
-import { MahalleService } from '../services/mahalle.service';
-import { TasinmazService } from '../services/tasinmaz.service';
-import { Router } from '@angular/router';
-import { Tasinmaz } from '../models/tasinmaz';
-import { Map, View } from 'ol';
-import Tile from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
-import { fromLonLat, toLonLat } from 'ol/proj';
-import { Feature } from 'ol';
-import { Point } from 'ol/geom';
-import VectorSource from 'ol/source/Vector';
-import VectorLayer from 'ol/layer/Vector';
-import { Style, Fill, Stroke, Circle as CircleStyle } from 'ol/style';
-import { Coordinate } from 'ol/coordinate';
-import { AuthService } from '../services/auth.service';
-import { AlertifyService } from '../services/alertify.service';
+import {
+  Component,
+  OnInit,
+  EventEmitter,
+  Output,
+  ViewChild,
+  ElementRef,
+  OnDestroy,
+} from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { IlService } from "../services/il.service";
+import { IlceService } from "../services/ilce.service";
+import { MahalleService } from "../services/mahalle.service";
+import { TasinmazService } from "../services/tasinmaz.service";
+import { Router } from "@angular/router";
+import { Tasinmaz } from "../models/tasinmaz";
+import { Map, View } from "ol";
+import Tile from "ol/layer/Tile";
+import OSM from "ol/source/OSM";
+import { fromLonLat, toLonLat } from "ol/proj";
+import { Feature } from "ol";
+import { Point } from "ol/geom";
+import VectorSource from "ol/source/Vector";
+import VectorLayer from "ol/layer/Vector";
+import { Style, Fill, Stroke, Circle as CircleStyle } from "ol/style";
+import { Coordinate } from "ol/coordinate";
+import { AuthService } from "../services/auth.service";
+import { AlertifyService } from "../services/alertify.service";
 
 @Component({
-  selector: 'app-add',
-  templateUrl: './add.component.html',
-  styleUrls: ['./add.component.css']
+  selector: "app-add",
+  templateUrl: "./add.component.html",
+  styleUrls: ["./add.component.css"],
 })
 export class AddComponent implements OnInit, OnDestroy {
   @Output() tasinmazAdded = new EventEmitter<void>();
-  @ViewChild('addTasinmazModal') addTasinmazModal: ElementRef;
+  @ViewChild("addTasinmazModal") addTasinmazModal: ElementRef;
 
   addTasinmazForm: FormGroup;
   iller: any[] = [];
@@ -35,7 +43,7 @@ export class AddComponent implements OnInit, OnDestroy {
   selectedIl: number;
   selectedIlce: number;
   showMap = false;
-  selectedCoordinate: { lon: number, lat: number } | null = null;
+  selectedCoordinate: { lon: number; lat: number } | null = null;
   private map: Map | undefined;
   private vectorSource: VectorSource = new VectorSource();
   initialCenter = fromLonLat([35.2433, 38.9637]);
@@ -56,15 +64,15 @@ export class AddComponent implements OnInit, OnDestroy {
     this.loadIller();
 
     this.addTasinmazForm = this.fb.group({
-      isim: ['', Validators.required],
-      il: ['', Validators.required],
-      ilce: ['', Validators.required],
-      mahalle: ['', Validators.required],
-      adres: ['', Validators.required],
-      ada: ['', Validators.required],
-      parsel: ['', Validators.required],
-      nitelik: ['', Validators.required],
-      koordinat: ['', Validators.required]
+      isim: ["", Validators.required],
+      il: ["", Validators.required],
+      ilce: ["", Validators.required],
+      mahalle: ["", Validators.required],
+      adres: ["", Validators.required],
+      ada: ["", Validators.required],
+      parsel: ["", Validators.required],
+      nitelik: ["", Validators.required],
+      koordinat: ["", Validators.required],
     });
     this.checkForCoordinates();
   }
@@ -76,7 +84,7 @@ export class AddComponent implements OnInit, OnDestroy {
         this.iller.sort((a, b) => a.name.localeCompare(b.name));
       },
       (error) => {
-        console.error('İller yüklenirken hata oluştu', error);
+        console.error("İller yüklenirken hata oluştu", error);
       }
     );
   }
@@ -97,7 +105,7 @@ export class AddComponent implements OnInit, OnDestroy {
         this.ilceler = data;
       },
       (error) => {
-        console.error('İlçeler yüklenirken hata oluştu', error);
+        console.error("İlçeler yüklenirken hata oluştu", error);
       }
     );
   }
@@ -108,7 +116,7 @@ export class AddComponent implements OnInit, OnDestroy {
         this.mahalleler = data;
       },
       (error) => {
-        console.error('Mahalleler yüklenirken hata oluştu', error);
+        console.error("Mahalleler yüklenirken hata oluştu", error);
       }
     );
   }
@@ -118,7 +126,9 @@ export class AddComponent implements OnInit, OnDestroy {
       const formData = this.addTasinmazForm.value;
       const userId = this.authService.getCurrentUserId();
       if (userId) {
-        const [koordinatX, koordinatY] = this.parseCoordinates(formData.koordinat);
+        const [koordinatX, koordinatY] = this.parseCoordinates(
+          formData.koordinat
+        );
         const tasinmaz: Tasinmaz = {
           id: 0,
           name: formData.isim,
@@ -131,23 +141,23 @@ export class AddComponent implements OnInit, OnDestroy {
           adres: formData.adres,
           userId: Number(userId),
           mahalle: null,
-          selected: false
-        }; 
+          selected: false,
+        };
         this.tasinmazService.addTasinmaz(tasinmaz).subscribe(
           (response) => {
-            console.log('Taşınmaz başarıyla eklendi', response);
+            console.log("Taşınmaz başarıyla eklendi", response);
             this.addTasinmazForm.reset();
             this.tasinmazAdded.emit();
-            this.alertifyService.success('Taşınmaz başarıyla eklendi');
+            this.alertifyService.success("Taşınmaz başarıyla eklendi");
             this.closeModal();
           },
           (error) => {
-            console.error('Taşınmaz eklenirken hata oluştu', error);
-            this.alertifyService.error('Taşınmaz eklenirken hata oluştu');
+            console.error("Taşınmaz eklenirken hata oluştu", error);
+            this.alertifyService.error("Taşınmaz eklenirken hata oluştu");
           }
         );
       } else {
-        console.error('User ID bulunamadı');
+        console.error("User ID bulunamadı");
       }
     }
   }
@@ -162,9 +172,8 @@ export class AddComponent implements OnInit, OnDestroy {
     this.vectorSource.clear();
     this.addTasinmazForm.patchValue({
       isim: null,
-      koordinat: ''
+      koordinat: "",
     });
-
   }
 
   ngAfterViewInit(): void {
@@ -190,21 +199,21 @@ export class AddComponent implements OnInit, OnDestroy {
       this.map.setTarget(null); // Harita zaten başlatılmışsa hedefi kaldır
       this.map = undefined;
     }
-    
+
     this.map = new Map({
-      target: 'map-container',
+      target: "map-container",
       layers: [
         new Tile({
-          source: new OSM()
+          source: new OSM(),
         }),
         new VectorLayer({
           source: this.vectorSource,
           style: new Style({
             image: new CircleStyle({
               radius: 7,
-              fill: new Fill({ color: 'red' }),
+              fill: new Fill({ color: "red" }),
               stroke: new Stroke({
-                color: 'black',
+                color: "black",
                 width: 2,
               }),
             }),
@@ -213,11 +222,11 @@ export class AddComponent implements OnInit, OnDestroy {
       ],
       view: new View({
         center: this.initialCenter,
-        zoom: this.initialZoom // Başlangıç zoom seviyesi
-      })
+        zoom: this.initialZoom, // Başlangıç zoom seviyesi
+      }),
     });
-  
-    this.map.on('click', (event) => {
+
+    this.map.on("click", (event) => {
       const coords = toLonLat(event.coordinate);
       this.onCoordinateSelected(coords);
     });
@@ -229,12 +238,14 @@ export class AddComponent implements OnInit, OnDestroy {
       lat: coords[1],
     };
     this.addTasinmazForm.patchValue({
-      koordinat: `${this.selectedCoordinate.lon}, ${this.selectedCoordinate.lat}`
+      koordinat: `${this.selectedCoordinate.lon}, ${this.selectedCoordinate.lat}`,
     });
 
     // Yeni işaretçi ekleyin
     const feature = new Feature({
-      geometry: new Point(fromLonLat([this.selectedCoordinate.lon, this.selectedCoordinate.lat])),
+      geometry: new Point(
+        fromLonLat([this.selectedCoordinate.lon, this.selectedCoordinate.lat])
+      ),
     });
     this.vectorSource.clear(); // Önceki işaretçileri temizle
     this.vectorSource.addFeature(feature);
@@ -243,29 +254,31 @@ export class AddComponent implements OnInit, OnDestroy {
   }
 
   checkForCoordinates() {
-    const koordinat = localStorage.getItem('koordinat');
+    const koordinat = localStorage.getItem("koordinat");
     if (koordinat) {
       this.addTasinmazForm.patchValue({ koordinat });
-      localStorage.removeItem('koordinat');
+      localStorage.removeItem("koordinat");
     }
   }
 
   closeModal() {
-    const modal = document.getElementById('addTasinmazModal');
+    const modal = document.getElementById("addTasinmazModal");
     if (modal) {
-      (modal as any).modal('hide');
+      (modal as any).modal("hide");
       this.resetForm();
     }
   }
 
   onMapClick(event: { lon: number; lat: number }) {
     this.addTasinmazForm.patchValue({
-      koordinat: `${event.lon}, ${event.lat}`
+      koordinat: `${event.lon}, ${event.lat}`,
     });
   }
 
   private parseCoordinates(coordinateString: string): [number, number] {
-    const coords = coordinateString.split(',').map(coord => parseFloat(coord.trim()));
+    const coords = coordinateString
+      .split(",")
+      .map((coord) => parseFloat(coord.trim()));
     return [coords[0], coords[1]];
   }
 }

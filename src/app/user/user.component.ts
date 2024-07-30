@@ -8,6 +8,7 @@ import { UserUpdateComponent } from "./user-update/user-update.component";
 import { UserAddComponent } from "./user-add/user-add.component";
 import * as bootstrap from "bootstrap";
 import { AuthService } from "../services/auth.service";
+import { AlertifyService } from "../services/alertify.service";
 
 @Component({
   selector: "app-user",
@@ -24,9 +25,9 @@ export class UserComponent implements OnInit {
   searchKeyword: string = "";
 
   constructor(
-    private http: HttpClient,
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertifyService: AlertifyService
   ) {}
 
   ngOnInit() {
@@ -83,9 +84,11 @@ export class UserComponent implements OnInit {
         () => {
           console.log("User deleted successfully");
           this.refreshUserList();
+          this.alertifyService.success("Kullanıcı başarıyla silindi");
         },
         (error) => {
           console.error("Error deleting user", error);
+          this.alertifyService.error("Kullanıcı silinirken hata oluştu");
         }
       );
     }
@@ -98,6 +101,7 @@ export class UserComponent implements OnInit {
       },
       (error) => {
         console.error("Kullanıcılar yüklenirken hata oluştu", error);
+        this.alertifyService.error("Kullanıcılar yüklenirken hata oluştu");
       }
     );
   }

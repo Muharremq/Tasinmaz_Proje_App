@@ -6,10 +6,10 @@
       <div class="col-md-12">
         <h1 class="text-center">User Table</h1>
         <!-- Search Bar -->
-        <form class="d-flex mb-3" role="search">
-          <input type="search" class="form-control me-2" placeholder="Search" [(ngModel)]="searchKeyword" name="searchKeyword" (input)="searchKullanicilar()">
-          <button type="button" class="btn btn-primary" type="submit">Search</button>
-        </form>
+        <div class="d-flex" role="search">
+          <input class="form-control me-2" type="text" placeholder="Ara" [(ngModel)]="searchTerm">
+          <button class="btn btn-primary" (click)="searchUsers()">Ara</button>
+        </div>
         <!-- Add Button -->
         <div class="mb-3">
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
@@ -54,7 +54,7 @@
       <pagination-controls (pageChange)="page = $event"></pagination-controls>
     </div>
     <!-- Export Excel Button -->
-    <button type="button" class="btn btn-primary" (click)="exportToExcel()">Export to Excel</button>
+    <button type="button" class="btn btn-success" (click)="exportToExcel()">Export to Excel</button>
   </div>
   <!-- Add ve Update User Modal -->
   <app-user-add (userAdded)="onUserAdded()"></app-user-add>

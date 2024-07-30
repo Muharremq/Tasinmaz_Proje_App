@@ -7,10 +7,10 @@ import {
   ViewChild,
 } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { UserService } from "src/app/services/user.service";
 import { AuthService } from "src/app/services/auth.service";
 import * as bootstrap from "bootstrap";
 import { Router } from "@angular/router";
+import { AlertifyService } from "src/app/services/alertify.service";
 
 @Component({
   selector: "app-user-add",
@@ -25,9 +25,9 @@ export class UserAddComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private alertifyService: AlertifyService
   ) {}
 
   ngOnInit() {
@@ -80,12 +80,16 @@ export class UserAddComponent implements OnInit {
       this.authService.register(registerUser).subscribe(
         () => {
           this.userAdded.emit();
+          this.alertifyService.success("Kullanıcı başarıyla eklendi.");
           this.closeModal();
           this.router.navigate(["/user"]).then(() => {
             console.log("Navigated to user page");
           });
         },
         (error) => {
+          this.alertifyService.error(
+            "Kullanıcı Eklenemedi. E-posta adresi kullanılmış olabilir."
+          );
           console.error("User registration error: ", error);
         }
       );
